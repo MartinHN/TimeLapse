@@ -1,0 +1,17 @@
+<Neige>
+	<useHPCP>1</useHPCP>
+	<threshCreate>1</threshCreate>
+	<ttlReduce>1</ttlReduce>
+	<radius>36</radius>
+	<ttl>2</ttl>
+	<ttlAlpha>1</ttlAlpha>
+	<timeMask>0.45</timeMask>
+<Neige/>
+<smooth>0.0433071</smooth>
+	<smoothDown>0</smoothDown>
+	<SubMean>1</SubMean>
+<randomNum>1.5748</randomNum>
+	<randomTime>0.255</randomTime>
+	<gttl>8.5</gttl>
+<soft>1</soft>
+</Neige>

@@ -1,0 +1,18 @@
+<GlovePointer>
+	<numParticules>331</numParticules>
+	<radius>5.485</radius>
+	<reinit>0</reinit>
+	<invert>1</invert>
+	<friction>0.67</friction>
+	<origin>1</origin>
+	<originK>0.0002</originK>
+	<spring>1</spring>
+	<springK>0.00145</springK>
+	<springRadius>0.3975</springRadius>
+<GlovePointer/>
+	<smooth>0.1</smooth>
+	<smoothDown>0.1</smoothDown>
+	<SubMean>1</SubMean>
+	<gloveDbg>1</gloveDbg>
+<isAttr>1</isAttr>
+</GlovePointer>

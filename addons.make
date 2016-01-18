@@ -1,0 +1,9 @@
+ofxGui
+ofxNetwork
+ofxOpenCv
+ofxOsc
+ofxVectorGraphics
+ofxXmlSettings
+ofxMidi
+ofxSyphon
+ofxTweener

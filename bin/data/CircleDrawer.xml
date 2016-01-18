@@ -1,0 +1,10 @@
+<CircleDrawer>
+	<mult>0.05</mult>
+	<type>0</type>
+<CircleDrawer/>
+<smooth>0.1</smooth>
+	<smoothDown>0.1</smoothDown>
+	<SubMean>1</SubMean>
+	<X>0.5</X>
+	<Y>0</Y>
+</CircleDrawer>

@@ -1,0 +1,5 @@
+<Particles>
+	<smooth>0.1</smooth>
+	<smoothDown>0.1</smoothDown>
+	<SubMean>1</SubMean>
+</Particles>

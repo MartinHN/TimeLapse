@@ -1,0 +1,8 @@
+<Bars>
+	<widthBar>0.1</widthBar>
+	<useHPCP>0</useHPCP>
+<Bars/>
+<smooth>0.1</smooth>
+	<smoothDown>0.1</smoothDown>
+	<SubMean>1</SubMean>
+</Bars>

@@ -1,0 +1,8 @@
+<SignalDrawer>
+	<smooth>0.011811</smooth>
+	<smoothDown>0.011811</smoothDown>
+	<SubMean>1</SubMean>
+	<radius>3</radius>
+	<onlyHPCP>1</onlyHPCP>
+<SignalDrawer/>
+</SignalDrawer>
