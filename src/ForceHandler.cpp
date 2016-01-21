@@ -48,11 +48,15 @@ void ForceHandler::doJob(){
     
     owner->acceleration.setZero();
     preComputeDists();
+    if(owner->numParticles>0){
     for(auto k :availableForces){
-        if(k.second->active)
+        if(k.second->active){
+//            ofScopedLock lk(mutex);
         k.second->updateForce();
+        }
         
         
+    }
     }
     
 }
@@ -86,7 +90,7 @@ void ForceHandler::activateForce(string name,bool t){
 }
 
 void ForceHandler::setAttractor(const string & name,ofVec3f pos){
-
+ofScopedLock lk(mutex);
     asyncAttractors[name] = pos;
 }
 void ForceHandler::removeAttractor(const string & name){

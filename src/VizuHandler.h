@@ -39,10 +39,12 @@ public:
         midiIn.addListener(this);
         
         
-            alpha.set("alpha",1.0,0.,1.);
+        alpha.set("alpha",1.0,0.,1.);
+        
+        
     };
     
-    
+    string mainSavePath;
     void linkApp(ofApp * a){app =a;};
     ofApp * app;
     AppViz* curVizu;
@@ -67,8 +69,8 @@ public:
             ofSetColor(255,255,255,isInTransit?alpha*255*(transitPct):alpha*255);
             nextVizu->draw();
         }
-
-
+        
+        
     }
     
     void update();
@@ -83,15 +85,17 @@ public:
                 delete last;
                 nextVizu = nullptr;
                 isInTransit = false;
-
+                
             }
         }
     }
     
-
+    
     void setNext(int num,float time){
         
-
+        mainSavePath = ofToDataPath("../../../preset/",true);
+        mainSavePath+="/";
+        ofLog() << "saving preset in " << mainSavePath;
         if(num == curNum)return;
         if(nextVizu)delete nextVizu;
         nextVizu = createForNum(num);
@@ -100,15 +104,25 @@ public:
         startTransition = ofGetElapsedTimeMillis();
         curNum = num;
         if(nextVizu){
-        if(panel!=nullptr)delete panel;
-        string pathSave = ofToDataPath(nextVizu->params.getName()+".xml");
-        panel = new ofxPanel(nextVizu->params,pathSave);
-        panel->loadFromFile(pathSave);
-        panel->setPosition(250, 10);
+            if(panel!=nullptr)delete panel;
+            string pathSave = mainSavePath+ nextVizu->params.getName()+"_0"+".xml";
+            panel = new ofxPanel(nextVizu->params,pathSave);
+            //        panel->loadFromFile(pathSave);
+            panel->setPosition(250, 10);
         }
     }
     
-    
+    void setPreset(int p,bool load){
+        
+        if(panel!=nullptr && curVizu!=nullptr){
+            string presetName = mainSavePath+ curVizu->params.getName()+"_"+ofToString(p)+".xml";
+            delete panel;
+            panel = new ofxPanel(curVizu->params,presetName);
+            panel->setPosition(250, 10);
+            if(load)
+                panel->loadFromFile(presetName);
+        }
+    }
     
     void newMidiMessage(ofxMidiMessage& msg)override;
     
@@ -119,7 +133,7 @@ public:
     
     
     
-
+    
     
     
     

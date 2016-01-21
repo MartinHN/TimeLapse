@@ -144,9 +144,9 @@ void MultiParticleHandler::draw(){
         f->drawLines();
     }
     
-//    for(auto &f:particlesList){
-//    f->forceHandler->drawAttractors();
-//    }
+    for(auto &f:particlesList){
+    f->forceHandler->drawAttractors();
+    }
     cam.end();
     
     glDepthMask(GL_TRUE);
