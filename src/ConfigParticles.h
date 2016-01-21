@@ -12,10 +12,12 @@
 #include "ofxPCA.h"
 #define COLNUM 3
 
+
+#define CPARAM(x,v,m,M) x.set(#x,v,m,M);params.add(x);
 //#define DIFFERENT_SIZES
 //#define FIXEDSIZE 1000//27
-typedef double MatReal;
-#define NEED_TO_CAST_VERT 1
+typedef float MatReal;
+#define NEED_TO_CAST_VERT 0
 //typedef  Matrix<MatReal,Dynamic,3,RowMajor|AutoAlign> MyMatrixType;
 #ifdef FIXEDSIZE
 #define ROWTYPE FIXEDSIZE

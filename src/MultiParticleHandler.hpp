@@ -54,11 +54,12 @@ class MultiParticleHandler :public AppViz{
 public:
     MultiParticleHandler(ofApp* a):AppViz(a){
         params.setName("Particles");
-      
-        ofDirectory d("models");
-        d.listDir();
-        d.allowExt(".obj");
-        models = d.getFiles();
+        CPARAM(pointSize,8,0,50);
+        CPARAM(lineWidth,8,0,50);
+        CPARAM(alphaGlobal,100,0,255);
+        CPARAM(zoom,1,0.001,10);
+        CPARAM(distortFactor,1,0,10);
+
         
         
         
@@ -66,6 +67,7 @@ public:
         initGL();
         for(auto &f:particlesList){
             f = new ParticleHandler(this);
+            params.add(f->params);
         }
         
         start();
@@ -83,7 +85,6 @@ public:
     bool isRenderingOnGPU;
         ofEasyCam cam;
     float widthSpace ;
-    float distortFactor ;
     ofShader shader;
     ofTexture pointTexture;
     ofVec3f screenToWorld(ofVec3f v);
@@ -93,6 +94,8 @@ public:
     vector<ParticleHandler*> particlesList;
     
     
+    ofParameter<float> pointSize,lineWidth,alphaGlobal,zoom,distortFactor;
+
     void update() override;
     
 
@@ -103,7 +106,7 @@ public:
     void APPLY_ON_EXISTING(stopForces);
     void APPLY_ON_EXISTING(startForces);
     void APPLY_ON_EXISTING(resetToInit);
-    void APPLY_ON_EXISTING1(loadModel,string);
+    void APPLY_ON_EXISTING1(loadModel,ofFile);
 
     
     typedef map<string,ofVec3f> attractorMap;
@@ -144,9 +147,9 @@ public:
                 
                 break;
             case 's':
-                stopForces();
-                loadModel(models[(idxModel++)%models.size()].getFileName());
-                startForces();
+//                stopForces();
+//                loadModel(models[(idxModel++)%models.size()].getFileName());
+//                startForces();
                 break;
         }
     }

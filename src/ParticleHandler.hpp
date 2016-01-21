@@ -23,12 +23,18 @@ class ParticleHandler{
 public:
     ParticleHandler(MultiParticleHandler * _owner):owner(_owner){
         setFPS(50);
-        nn = new MyNN();
+        nn = make_shared<MyNN>();
         forceHandler =  new ForceHandler(this);
         physics = new PhysicsHandler(this);
         
+
         init();
-  
+        CPARAM(lineStyle,0,0,10);
+            CPARAM(originType,0,0,10);
+        params.add(forceHandler->forcesParams);
+        params.add(physics->params);
+                originType.addListener(this ,&ParticleHandler::changeOrigin);
+
     };
     
     ~ParticleHandler(){
@@ -42,7 +48,7 @@ public:
 
     int side;
     void init();
-
+    void changeOrigin(int & type);
 
     void start(){
         resetToInit();
@@ -51,13 +57,18 @@ public:
     }
     
     
+    ofParameterGroup params;
+    ofParameter<int> lineStyle;
+    ofParameter<int> originType;
+
+    
     void stopForces()
     {if(forceHandler!=nullptr){forceHandler->waitForThread(true);}};
     
     void startForces(){forceHandler->startThread();};
     
     
-    void initGrid();
+    void initGrid(int num);
     void initIndexes();
     
     
@@ -81,13 +92,15 @@ public:
     vector<ofVec3f> sizes;
     typedef std::pair<ofIndexType,ofIndexType>  IndexType;
     vector<IndexType> indexes;
+    vector<unsigned int> lineIdx;
     void setNumParticles(int num);
     void setFPS(int fps){
         deltaT = 1000.0/fps;
     }
-    void loadModel(string name = "");
+    void loadModel(ofFile f);
     void update();
     void draw();
+    void drawLines();
     void resetToInit();
     ForceHandler *   forceHandler;
     PhysicsHandler *  physics;
@@ -97,7 +110,7 @@ public:
     
     
     typedef itg::NearestNeighbour<Array<float,COLNUM,1> >  MyNN;
-    MyNN  *  nn;
+    shared_ptr<MyNN>  nn;
     
     typedef pair<size_t, float> match;
     typedef vector<match> matches;

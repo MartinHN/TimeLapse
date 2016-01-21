@@ -23,4 +23,6 @@ xcuserdata
 *.xcuserstate
 
 
+*.DS_Store
+
 *.app/

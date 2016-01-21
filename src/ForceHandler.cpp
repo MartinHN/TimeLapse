@@ -48,8 +48,8 @@ void ForceHandler::doJob(){
     
     owner->acceleration.setZero();
     preComputeDists();
-    for(auto k :activeForces){
-        
+    for(auto k :availableForces){
+        if(k.second->active)
         k.second->updateForce();
         
         
@@ -60,22 +60,29 @@ void ForceHandler::doJob(){
 ForceHandler::Force::Force(ForceHandler * f,string name):forceOwner(f){
     active = false;
     forceOwner->availableForces[name] = this;
+    params.setName(name);
+    CPARAM(active,true,false,true);
+    forceOwner->forcesParams.add(params);
+    
 }
-
+void ForceHandler::Force::linkParams(){
+    
+}
 void ForceHandler::activateForce(string name,bool t){
-    if(t){
+//    if(t){
         ForceIt f = availableForces.find(name);
         if(f!=availableForces.end()){
-            activeForces[name] = f->second;
+            availableForces[name]->active = t;// = f->second;
         }
-    }
-    else{
-         ForceIt f = activeForces.find(name);
-        if(f!=activeForces.end()){
-            activeForces.erase(name);
-        }
-        else activateForce(name);
-    }
+        
+//    }
+//    else{
+//         ForceIt f = activeForces.find(name);
+//        if(f!=activeForces.end()){
+//            activeForces.erase(name);
+//        }
+//        else activateForce(name);
+//    }
 }
 
 void ForceHandler::setAttractor(const string & name,ofVec3f pos){
@@ -98,11 +105,13 @@ void ForceHandler::resetAttractors(map<string,ofVec3f> & m){
 class Origin : public ForceHandler::Force{
 public:
     Origin(ForceHandler * f):Force(f,"origin"){
+
+        CPARAM(k,0.1,0,0.5);
     }
     
 //    MyMatrixType origins;
     
-    float k=0.1;
+    ofParameter<float> k=0.1;
     void changeNumParticles(int num) override{
         
     }
@@ -117,17 +126,19 @@ public:
 class Spring:public ForceHandler::Force{
 public:
     Spring(ForceHandler * f):ForceHandler::Force(f,"spring"){
+        CPARAM(k,.1,0,10);
+                CPARAM(l0,.1,0,1);
     }
     //    Matrix<MatReal,1,3> pos;
-    double k = .1;
+    ofParameter<double> k,l0;
     
     void updateForce()override{
-        double l0 = .25 * FORCE_OWNER->getWidthSpace();
+        double _l0 = l0 * FORCE_OWNER->getWidthSpace();
         for(auto & f:forceOwner->attractors){
 //            if(forceOwner->attractors[f.first].w){
             
                 forceOwner->buf1D  =   forceOwner->attrNorm[f.first].eval();
-                forceOwner->buf1D-=l0;
+                forceOwner->buf1D-=_l0;
                 forceOwner->buf1D*=-k;
                 
             forceOwner->buf3D =  forceOwner->attrVec[f.first].eval();
@@ -140,10 +151,11 @@ public:
 class Rotate:public ForceHandler::Force{
 public:
     Rotate(ForceHandler * f):ForceHandler::Force(f,"rotate"){
+        CPARAM(k,0,0,10);
     }
     
     
-    double k = .001;
+    ofParameter<double> k = .001;
     MyMatrixType  tmp ;
     
     void changeNumParticles(int num) override{
@@ -201,8 +213,12 @@ public:
 class Neighbors:public ForceHandler::Force{
 public:
     Neighbors(ForceHandler * f):ForceHandler::Force(f,"neighbors"){
+        CPARAM(k,0.02,0,0.01);
+        CPARAM(r,0.1,0,0.2);
+        CPARAM(l0,0.1,0,0.02);
+        
     }
-    float k=0.02,r = 0.1,l0 = 0.1;
+    ofParameter<float> k=0.02,r = 0.1,l0 = 0.1;
 
     void changeNumParticles(int num) override{
 
@@ -234,12 +250,10 @@ public:
 
 void ForceHandler::initForces(){
     new Origin(this);
-//        activateForce("origin");
-//    new Spring(this);
-//    activateForce("spring");
+    new Spring(this);
     new Rotate(this);
-    activateForce("rotate");
-//    new Neighbors(this);
+//    activateForce("rotate");
+    new Neighbors(this);
 //    activateForce("neighbors");
     
     

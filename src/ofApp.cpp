@@ -8,8 +8,9 @@ void ofApp::setup(){
     ofBackground(0);
     osc.setup(6001);
 #ifndef DEBUG
+    ofLog() << ofToDataPath("",true);
     ofSetDataPathRoot("/");
-    
+    ofLog() << ofToDataPath("",true);
 #endif
 
     syphon.setName("HeyOF");
@@ -98,7 +99,6 @@ void ofApp::parseOsc(){
         if(ad[1] == "attractor"){
             int attractor = m.getArgAsInt32(0);
             string attractName = ofToString(attractor);
-            int particlesToApply =attractor==0?0:-1;
             if(m.getNumArgs() == 2){
                 attractors.erase(attractName);
             }
@@ -144,7 +144,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
     if(button ==2){
         
 //        ofVec3f a = ofVec3f(x,y);//screenToWorld(ofVec2f(x,y));
-        attractors["mouse"] = ofVec3f(x,y);
+        attractors["mouse"] = ofVec3f(x*1.0/ofGetWidth(),1.0-y*1.0/ofGetHeight());
         //                                  ofLog() <<         a;
     }
 }

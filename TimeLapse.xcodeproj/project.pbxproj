@@ -358,6 +358,7 @@
 		BBAF9D981351C596CA67CAF9 /* hybridtracker.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = hybridtracker.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/contrib/hybridtracker.hpp; sourceTree = SOURCE_ROOT; };
 		BC8881B3C8C0A1C45F042E7A /* OscPrintReceivedElements.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OscPrintReceivedElements.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPrintReceivedElements.cpp; sourceTree = SOURCE_ROOT; };
 		BD0E7AC8BE205034D5B377A6 /* ofxMidiMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMidiMessage.h; path = ../../../addons/ofxMidi/src/ofxMidiMessage.h; sourceTree = SOURCE_ROOT; };
+		BD9F46201C4FC5C40065635B /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = bin/data/shaders; sourceTree = SOURCE_ROOT; };
 		BDAFF6811BE11DE300DA7E50 /* VizuHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VizuHandler.h; sourceTree = "<group>"; };
 		BDAFF6821BE11EAB00DA7E50 /* VizuHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VizuHandler.cpp; sourceTree = "<group>"; };
 		BDAFF6841BE1211E00DA7E50 /* CircleDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CircleDrawer.h; sourceTree = "<group>"; };
@@ -758,6 +759,7 @@
 		3F7068071C4D128D00DBC8ED /* Particles */ = {
 			isa = PBXGroup;
 			children = (
+				BD9F46201C4FC5C40065635B /* shaders */,
 				3F7068081C4D12A100DBC8ED /* ConfigParticles.h */,
 				3F70680B1C4D12A100DBC8ED /* MultiParticleHandler.cpp */,
 				3F70680C1C4D12A100DBC8ED /* MultiParticleHandler.hpp */,

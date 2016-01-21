@@ -7,8 +7,9 @@
 
 void main (void) {
     float a = 1-(2*length(gl_TexCoord[0].st-vec2(0.5,0.5)));
+//    float a = length(gl_TexCoord[0].st);
     gl_FragColor = vec4(gl_Color.x,gl_Color.y,gl_Color.z,gl_Color.w*a);
-
+//    gl_FragColor = gl_Color;
 
     
 }

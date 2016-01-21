@@ -25,7 +25,11 @@ class PhysicsHandler  : public ofThread{
     public :
     
     PhysicsHandler(ParticleHandler * p):owner(p){
+        params.setName("physics");
         
+        CPARAM(fr,.9,0,1);
+        CPARAM(maxVel,0,0,10);
+        CPARAM(onlyVelocity,true,false,true);
     }
     
     void threadedFunction() override;
@@ -35,8 +39,9 @@ class PhysicsHandler  : public ofThread{
     double actualDelay;
     
     
-    float fr = .9,maxVel = 10;
-    
+    ofParameter<float> fr = .9,maxVel = 10;
+    ofParameter<bool> onlyVelocity;
+    ofParameterGroup params;
     
     ParticleHandler * owner;
 };

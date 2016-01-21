@@ -47,7 +47,7 @@ class ForceHandler : public ofThread {
     
     void preComputeDists();
     void changeNumParticles(int num){
-        for(auto &f:activeForces){
+        for(auto &f:availableForces){
             f.second->changeNumParticles(num);
         }
     };
@@ -56,16 +56,19 @@ class ForceHandler : public ofThread {
     public:
 
         Force(ForceHandler * f,string name);
-        bool active;
+        ofParameter<bool> active;
         virtual void activate(){};
         
         virtual void updateForce() = 0;
         virtual void changeNumParticles(int num){};
         ForceHandler * forceOwner;
+        ofParameterGroup params;
+        
+        void linkParams();
     };
     
     map<string,Force* > availableForces;
-    map<string,Force* > activeForces;
+//    map<string,Force* > activeForces;
     typedef map<string,Force* >::iterator ForceIt;
     void activateForce(string name,bool t=true);
 
@@ -74,6 +77,8 @@ class ForceHandler : public ofThread {
 
         map<string,ofVec3f> attractors;
     
+    
+    ofParameterGroup forcesParams;
     
     
 

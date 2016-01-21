@@ -31,12 +31,17 @@ void MultiParticleHandler::initGL(){
 }
 
 void MultiParticleHandler::update(){
+    cam.setDistance((widthSpace/2)*(1+1.0/distortFactor)/zoom);
+    cam.setFov(ofRadToDeg(2*atan(distortFactor)));
     
     clearAttractors();
     map<string,ofVec3f> attrUp = app->attractors;
     for(auto & a:app->attractors){
         int num = ofToInt(a.first);
-        if(num>=0 && num<3)setAttractor(a.first,normalizedToWorld(a.second),num);
+        if(num>1)num = -1;
+        ofVec3f v =normalizedToWorld(a.second);
+//        ofLog()<<num << ","<<v << "," <<a.second;
+        setAttractor(a.first,v,num);
     }
         update(-1);
     
@@ -110,9 +115,8 @@ void MultiParticleHandler::draw(){
 //        ofEnableBlendMode(OF_BLENDMODE_ADD);
 
     ofEnableAlphaBlending();
-    glPointSize(8);
-    glLineWidth(1);
-    ofSetColor(255,255,255,150);
+    glPointSize(pointSize);
+    glLineWidth(lineWidth);
     ofDisableDepthTest();
     cam.begin();
     shader.begin();
@@ -124,7 +128,7 @@ void MultiParticleHandler::draw(){
     if(!isRenderingOnGPU)
         pointTexture.bind();
     for(auto &f:particlesList){
-        ofSetColor(f->color,100);
+        ofSetColor(f->color,alphaGlobal);
         f->draw();
     }
     
@@ -135,11 +139,14 @@ void MultiParticleHandler::draw(){
     
     shader.end();
     
-    
-    
     for(auto &f:particlesList){
-    f->forceHandler->drawAttractors();
+        ofSetColor(f->color,alphaGlobal);
+        f->drawLines();
     }
+    
+//    for(auto &f:particlesList){
+//    f->forceHandler->drawAttractors();
+//    }
     cam.end();
     
     glDepthMask(GL_TRUE);
