@@ -94,7 +94,7 @@ void ofApp::removeLeapAttractors(){
     for(auto & l:attractors){
         vector <string > add = ofSplitString(l.first,"/");
         
-        if(add.size()>0 && add[1] == "leap"){
+        if(add.size()>1 && add[1] == "leap"){
             ofLog() << add[0];
             attrTmp.erase(l.first);
         }
@@ -104,7 +104,7 @@ void ofApp::removeLeapAttractors(){
 void ofApp::updateLeap(){
     simpleHands = leap.getSimpleHands();
     if( leap.isFrameNew()){
-        leap.setMappingX(-200, 200, 0,1);
+        leap.setMappingX(-80, 80, 0,1);
         leap.setMappingY(0,400, 0,1);
         leap.setMappingZ(-200,200, 0.1, 1);
         removeLeapAttractors();

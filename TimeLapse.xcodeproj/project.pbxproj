@@ -362,6 +362,7 @@
 		BBAF9D981351C596CA67CAF9 /* hybridtracker.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = hybridtracker.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/contrib/hybridtracker.hpp; sourceTree = SOURCE_ROOT; };
 		BC8881B3C8C0A1C45F042E7A /* OscPrintReceivedElements.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OscPrintReceivedElements.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPrintReceivedElements.cpp; sourceTree = SOURCE_ROOT; };
 		BD0E7AC8BE205034D5B377A6 /* ofxMidiMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMidiMessage.h; path = ../../../addons/ofxMidi/src/ofxMidiMessage.h; sourceTree = SOURCE_ROOT; };
+		BD5BD8CA1C511C5000B7124A /* TimeLapser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeLapser.h; sourceTree = "<group>"; };
 		BD9F46201C4FC5C40065635B /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = bin/data/shaders; sourceTree = SOURCE_ROOT; };
 		BD9F46221C50DB2C0065635B /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		BD9F46231C50DB2C0065635B /* addon_config.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = addon_config.mk; sourceTree = "<group>"; };
@@ -1379,6 +1380,7 @@
 			isa = PBXGroup;
 			children = (
 				BDD9760D1BE1015D00F719F4 /* VizWarpper.h */,
+				BD5BD8CA1C511C5000B7124A /* TimeLapser.h */,
 				BDD9760B1BE0FE7000F719F4 /* SignalDrawer.h */,
 				BDAFF68C1BE14F6700DA7E50 /* Bars.h */,
 				BDAFF68B1BE14AD700DA7E50 /* GlovePointer.h */,
@@ -1684,7 +1686,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "rsync -avedz \"/Users/Tintamar/Dev/openFrameworks/apps/myApps/TimeLapse/bin/TimeLapse.app/\" \"/Volumes/BO20/Documents/TimeLapse/TimeLapse.app/\"";
+			shellScript = "execPath= \"/Users/BO20/Documents/TimeLapse/TimeLapse/OF/\"\nrsync -avedz \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app\" $execPath\nrm -rf \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app\"\nln -s \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app\" \"$execPath/$PRODUCT_NAME.app\"\n\n";
 		};
 		E4B6FFFD0C3F9AB9008CF71C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2162,7 +2164,7 @@
 					"$(OF_CORE_LIBS)",
 					../../../addons/ofxOpenCv/libs/opencv/lib/osx/opencv.a,
 				);
-				PRODUCT_NAME = TimeLapseDebug;
+				PRODUCT_NAME = TimeLapse;
 				WRAPPER_EXTENSION = app;
 				baseConfigurationReference = E4EB6923138AFD0F00A09F29;
 			};

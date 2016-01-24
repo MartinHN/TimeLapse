@@ -34,7 +34,8 @@ AppViz * VizuHandler::createForNum(int num){
             return new GlovePointer(app);
         case 5:
             return new MultiParticleHandler(app);
-     
+        case 6:
+            return new TimeLapser(app);
 
             
         default:

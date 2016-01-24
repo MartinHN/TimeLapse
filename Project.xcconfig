@@ -15,3 +15,7 @@ ICON_FILE_PATH = $(OF_PATH)/libs/openFrameworksCompiled/project/osx/
 
 OTHER_LDFLAGS = $(OF_CORE_LIBS) $(OF_CORE_FRAMEWORKS)
 HEADER_SEARCH_PATHS = $(OF_CORE_HEADERS)
+
+
+CONFIGURATION_BUILD_DIR = /Users/BO20/Documents/TimeLapse/TimeLapse/OF
+BUILT_PRODUCTS_DIR = /Users/BO20/Documents/TimeLapse/TimeLapse/OF

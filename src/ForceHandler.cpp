@@ -138,17 +138,19 @@ public:
     
     void updateForce()override{
         double _l0 = l0 * FORCE_OWNER->getWidthSpace();
+        int idx = 0;
+        int step = FORCE_OWNER->numParticles / MAX(forceOwner->attractors.size(),1);
+        forceOwner->buf1D.resize(step, 1);
+        forceOwner->buf3D.resize(step,3);
         for(auto & f:forceOwner->attractors){
-//            if(forceOwner->attractors[f.first].w){
-            
-                forceOwner->buf1D  =   forceOwner->attrNorm[f.first].eval();
+                forceOwner->buf1D  =   forceOwner->attrNorm[f.first].block(idx*step,0,step,1).col(0);
                 forceOwner->buf1D-=_l0;
                 forceOwner->buf1D*=-k;
                 
-            forceOwner->buf3D =  forceOwner->attrVec[f.first].eval();
+            forceOwner->buf3D =  forceOwner->attrVec[f.first].block(idx*step,0,step,COLNUM).eval();
             forceOwner->buf3D= forceOwner->buf3D.colwise()/(forceOwner->buf3D.matrix().rowwise().stableNorm().array());
-                FORCE_OWNER->acceleration+=  forceOwner->buf3D.colwise() * forceOwner->buf1D;
-//            }
+                FORCE_OWNER->acceleration.block(idx*step,0,step,COLNUM)+=  forceOwner->buf3D.colwise() * forceOwner->buf1D;
+            idx++;
         }
     }
 };

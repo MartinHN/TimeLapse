@@ -57,8 +57,8 @@ public:
         CPARAM(pointSize,8,0,50);
         CPARAM(lineWidth,8,0,50);
         CPARAM(alphaGlobal,100,0,255);
-        CPARAM(zoom,1,0.001,10);
-        CPARAM(distortFactor,1,0,10);
+        CPARAM(zoom,1,0.1,10);
+        CPARAM(distortFactor,1,0.01,10);
 
         
         

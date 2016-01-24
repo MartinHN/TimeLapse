@@ -54,8 +54,8 @@ class ofApp : public ofBaseApp{
     
     ofFbo outTexture;
     
-     int widthOut = 1280;
-     int heightOut = 800;
+     int widthOut = 1920;
+     int heightOut = 1080;
     
 
     ofParameter<float> transitionTime;

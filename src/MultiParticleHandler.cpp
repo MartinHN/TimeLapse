@@ -31,7 +31,7 @@ void MultiParticleHandler::initGL(){
 }
 
 void MultiParticleHandler::update(){
-    cam.setDistance((widthSpace/2)*(1+1.0/distortFactor)/zoom);
+    cam.setDistance((widthSpace/2.0)*(1+1.0/distortFactor)*1.0/zoom);
     cam.setFov(ofRadToDeg(2*atan(distortFactor)));
     
     clearAttractors();
