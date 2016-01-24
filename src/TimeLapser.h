@@ -39,6 +39,7 @@ public:
         isPlaying.addListener(this,&TimeLapser::beginPlay);
         isRecording.addListener(this,&TimeLapser::beginRec);
         clear.addListener(this,&TimeLapser::doClear);
+        bank.addListener(this,&TimeLapser::setBank);
         frames.resize(1000);
         recordHead=0;
         playHead = 0;
@@ -110,11 +111,14 @@ public:
             recordHead=0;
             ofDirectory d(getDataPathForBank(bank));
             d.listDir();
-            d.remove(false);
+            d.remove(true);
         }
     }
     
-    
+    void setBank(int & b){
+        playHead = 0;
+        recordHead = 0;
+    }
     
     class Frame{
         public :
@@ -122,30 +126,31 @@ public:
             //      pix.allocate(IM_W,IM_H,OF_PIXELS_RGB);
             
             refTime =  0;
+            duration = 200;
         }
-        ofPixels pix;
+//        ofPixels pix;
         float duration;
         unsigned long refTime;
     };
     
-    void recordNew(ofTexture * t){
+    void recordNew(ofTexture & t){
         syphon.bind();
         syphon.unbind();
         ofSetColor(255,255,255,255);
         fuck.begin();
         ofFill();
         ofClear(0);
-        syphon.getTexture()->draw(0,0);
+        syphon.getTexture().draw(0,0);
         fuck.end();
-        frames[recordHead].pix.allocate(fuck.getWidth(),fuck.getHeight(),OF_PIXELS_RGB);
-        //        fuck.readToPixels(frames[recordHead].pix);
         fuck.readToPixels(pixBuf);
+        
+        
         frames[recordHead].refTime = ofGetElapsedTimeMillis() - startRec;
         if(recordHead>0){
             frames[recordHead-1].duration = frames[recordHead].refTime - frames[recordHead-1].refTime;
+            
         }
         if(displayRecorded || saveRecorded){
-            //            image.setFromPixels(frames[recordHead].pix);
             image.setFromPixels(pixBuf);
             image.update();
             if(saveRecorded){
@@ -192,14 +197,12 @@ public:
             ofDirectory dir(getDataPathForBank(bank));
             dir.listDir();
             //                 if(playHead < recLength-1){
-            if(playHead<dir.getFiles().size()){
+            if(playHead<dir.getFiles().size()-1){
                 unsigned long nextTime = frames[playHead+1].refTime ;
                 if((localTime - startPlay) >=nextTime  ){
                     playHead++;
-                    //                         string imgPath = +ofToString(playHead)+".jpg";
-                    //                         image.setFromPixels(frames[playHead].pix);
                     image.load(dir.getFiles()[playHead]);
-                    //                         image.update();
+                    
                 }
                 
             }
