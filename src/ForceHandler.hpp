@@ -24,7 +24,7 @@ class ForceHandler : public ofThread {
     public :
     
     ForceHandler(ParticleHandler * p):owner(p){
-        
+        forcesParams.setName("forces");
     }
     
     void threadedFunction() override;

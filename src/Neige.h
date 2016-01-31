@@ -26,7 +26,7 @@ public:
         CPARAM(randomNum,0,0,200);
         CPARAM(randomTime,0.,0,1.);
         CPARAM(randomRadius,0.01,.1,1);
-                CPARAM(randomCenter,ofVec2f(0.5),ofVec2f(0),ofVec2f(1));
+        CPARAM(randomCenter,ofVec2f(0.5),ofVec2f(0),ofVec2f(1));
         CPARAM(distortX,1,0,2);
         CPARAM(gttl,2,0,10);
         CPARAM(ttlAlpha,true,false,true);
@@ -102,7 +102,7 @@ public:
                 pos.x=(pos.x +randomCenter->x)*app->widthOut;
                 pos.y=( pos.y + randomCenter->y)*app->heightOut;
                 float rad = radius*ofRandom(1);
-                parts.push_back(particle(pos,rad,gttl.get()*1000.0));
+                parts.push_back(particle(app,pos,rad,gttl.get()*1000.0));
                 timeMasks[idx] = 1000*timeMask;
                 ofLog() << "createG";
             }
@@ -120,7 +120,7 @@ public:
                     pos.x=(pos.x +randomCenter->x)*app->widthOut;
                     pos.y=( pos.y + randomCenter->y)*app->heightOut;
                     float rad = radius*ofRandom(1);
-                    parts.push_back(particle(pos,rad,gttl.get()*1000.0));
+                    parts.push_back(particle(app,pos,rad,gttl.get()*1000.0));
                 }
                 
                 curRandom = randomTime*1000.0;
@@ -147,7 +147,7 @@ public:
     
     class particle : public ofVec3f{
     public:
-        particle(ofVec3f & v,float radius,float ttl):ofVec3f(v),ttl(ttl),originTtl(ttl),radius(radius){
+        particle(ofApp * _app,ofVec3f & v,float radius,float ttl):ofVec3f(v),ttl(ttl),originTtl(ttl),radius(radius),app(_app){
             ofLog() << "createP";
             if(!dot.isAllocated()){
                 dot.load("shaders/dot.png");
@@ -157,11 +157,13 @@ public:
         float ttl;
         float originTtl;
         float radius;
+        ofApp * app;
         void draw(bool ttlReduce,bool ttlAlpha,bool soft){
-            float cTTl = soft?(1-abs((ttl - originTtl/2)/originTtl)):(ttl/originTtl);
+            float cTTl = soft?(1-2*abs((ttl - originTtl/2)/originTtl)):(ttl/originTtl);
             float r = ttlReduce?cTTl*radius:radius;
             ofVec3f pos = *this;
-            ofSetColor(255,255,255, ttlAlpha?cTTl*255:255);
+            ofColor curCol = app->viz.mainColor;
+            ofSetColor(curCol.r,curCol.g,curCol.b,curCol.a* (ttlAlpha?cTTl*1.0:1.0));
             dot.draw(pos.x-r/2,pos.y-r/2,r,r);
 //            ofDrawEllipse(pos,r,r);
 //            ofLog() << "dr";

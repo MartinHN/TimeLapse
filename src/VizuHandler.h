@@ -12,6 +12,8 @@
 #include "ofMain.h"
 #include "AppViz.h"
 #include "ofxMidi.h"
+#include "ofxOscParameterSync.h"
+
 
 class ofApp;
 
@@ -52,6 +54,8 @@ public:
         
     };
     
+    
+    ofxOscParameterSync  oscParam;
     string mainSavePath;
     void linkApp(ofApp * a){app =a;};
     ofApp * app;
@@ -101,6 +105,9 @@ public:
                 nextVizu = nullptr;
                 isInTransit = false;
                 transitPct = 1;
+                
+
+                oscParam.setup(curVizu->params,7555,"localhost",7556);
                 
             }
         }

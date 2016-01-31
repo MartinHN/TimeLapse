@@ -214,14 +214,7 @@ void ParticleHandler::initIndexes(){
     void ParticleHandler::drawLines(){
         //        vbo.updateIndexData(&lineIdx[0],lineIdx.size());
         if (lineStyle>0){
-            if(lineStyle==1){
-                
-                vbo.drawElements(lineStyle, lineIdx.size());
-            }
-            else {
-                vbo.drawElements(GL_LINES, lineIdx.size());
-                
-            }
+                vbo.drawElements(lineStyle-1, lineIdx.size());
         }
         //        vbo.drawElements(GL_LINE_STRIP, numParticles);
     }

@@ -59,7 +59,7 @@ public:
         CPARAM(drawAttr , false,false,true);
         CPARAM(zoom,1,0.1,10);
         CPARAM(distortFactor,1,0.01,10);
-        CPARAM(defaultNumPart,10000,27,500000);
+        CPARAM(defaultNumPart,10000,27,20000);
         
         
         

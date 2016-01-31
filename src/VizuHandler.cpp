@@ -12,6 +12,7 @@
 
 void VizuHandler::update(){
     updateTransition();
+    oscParam.update();
     if(curVizu!=nullptr){curVizu->internUpdate();curVizu->update();}
     if(nextVizu!=nullptr){nextVizu->internUpdate();nextVizu->update();}
     if(changeNumViz){
