@@ -17,4 +17,5 @@
 #include "GlovePointer.h"
 #include "MultiParticleHandler.hpp"
 #include "TimeLapser.h"
+#include "TreeLapser.h"
 #endif

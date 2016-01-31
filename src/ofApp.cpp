@@ -23,22 +23,29 @@ void ofApp::setup(){
     
     leap.open();
     
-    CPARAM(vizNumber,1,0,10);
-    CPARAM(transitionTime,2,0,6);
-    CPARAM(preset,0,0,5);
-    CPARAM(editMode,true,false,true);
-    preset.addListener(this,&ofApp::presetChanged);
-    vizNumber.addListener(this,&ofApp::vizChanged);
+
+
+
+    params.add(viz.params);
     
-    params.add(viz.alpha);
+    CPARAM(alphaFade,255,0,255);
+//    CPARAM(mainColor,ofColor(255,255,255,255),ofColor(0),ofColor(255))
+
     
+   
     
-    params.setName("params");
+    params.setName("mainParams");
     panel = new ofxPanel(params);
     
     vizNumber = 0;
     
     glove.init();
+    
+    
+    outTexture.begin();
+    ofClear(0);
+    outTexture.end();
+//    ofDrawRectangle(0, 0, widthOut, heightOut);
     
     
 }
@@ -51,24 +58,22 @@ void ofApp::update(){
 }
 
 
-void ofApp::vizChanged(int & num){
-    viz.setNext(num, transitionTime);
-}
+
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
     
     outTexture.begin();
-    ofSetColor(0);
+    ofEnableAlphaBlending();
+    ofSetColor(0,0,0,alphaFade);
     ofDrawRectangle(0, 0, widthOut, heightOut);
-    ofSetColor(255);
     viz.draw();
     outTexture.end();
     
     syphon.publishTexture(&outTexture.getTexture());
     
-    if(hasOSC)ofDrawEllipse(30,30,30,30);
+//    if(hasOSC)ofDrawEllipse(30,30,30,30);
     ofDisableAlphaBlending();
     ofSetColor(255,255,255,255);
     outTexture.draw(0, 0,ofGetWidth(),ofGetHeight());
@@ -122,6 +127,10 @@ void ofApp::updateLeap(){
 
                     
                 }
+                string id = "/leap/"+ofToString(i)+"/pos";
+                //store fingers seen this frame for drawing
+                attractors[id]=simpleHands[i].handPos;
+                
             }
         }
 
@@ -142,13 +151,13 @@ void ofApp::parseOsc(){
                 attractors.erase(attractName);
             }
             else{
-                
                 attractors[attractName] = ofVec3f(m.getArgAsFloat(1),m.getArgAsFloat(2),0);
-                
             }
             
         }
-        if(ad.size()<2)continue;
+        
+
+        if(ad.size()<2 )continue;
         if(ad[1] == "enveloppes"){
             if(m.getNumArgs()!=enveloppes.size()){enveloppes.resize(m.getNumArgs());}
             for(int i = 0 ; i < m.getNumArgs();i++){enveloppes[i] = m.getArgAsFloat(i);}
@@ -171,9 +180,7 @@ void ofApp::parseOsc(){
     }
 }
 
-void ofApp::presetChanged(int & p){
-    viz.setPreset(p,!editMode);
-}
+
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){

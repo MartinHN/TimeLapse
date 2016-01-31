@@ -40,10 +40,10 @@ void MultiParticleHandler::update(){
         int num = ofToInt(a.first);
         if(num>1)num = -1;
         ofVec3f v =normalizedToWorld(a.second);
-//        ofLog()<<num << ","<<v << "," <<a.second;
+        //        ofLog()<<num << ","<<v << "," <<a.second;
         setAttractor(a.first,v,num);
     }
-        update(-1);
+    update(-1);
     
 }
 
@@ -112,8 +112,8 @@ void MultiParticleHandler::draw(){
     ofEnablePointSprites();
     ofEnableSmoothing();
     
-//        ofEnableBlendMode(OF_BLENDMODE_ADD);
-
+    //        ofEnableBlendMode(OF_BLENDMODE_ADD);
+    
     ofEnableAlphaBlending();
     glPointSize(pointSize);
     glLineWidth(lineWidth);
@@ -122,13 +122,9 @@ void MultiParticleHandler::draw(){
     shader.begin();
     
     
-    
-//        ofEnableBlendMode(OF_BLENDMODE_SCREEN);
-    //    ofSetColor(50,50,50,10);
     if(!isRenderingOnGPU)
         pointTexture.bind();
     for(auto &f:particlesList){
-        ofSetColor(f->color,alphaGlobal);
         f->draw();
     }
     
@@ -140,12 +136,12 @@ void MultiParticleHandler::draw(){
     shader.end();
     
     for(auto &f:particlesList){
-        ofSetColor(f->color,alphaGlobal);
         f->drawLines();
     }
-    
-    for(auto &f:particlesList){
-    f->forceHandler->drawAttractors();
+    if(drawAttr){
+        for(auto &f:particlesList){
+            f->forceHandler->drawAttractors();
+        }
     }
     cam.end();
     

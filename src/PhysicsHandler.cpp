@@ -27,7 +27,7 @@ void PhysicsHandler::threadedFunction() {
 
 
 void PhysicsHandler::doJob(){
-    float dT = (actualDelay/100.0);
+    float dT = (actualDelay/100.0) * globalTimeFactor*globalTimeFactor;
     if(onlyVelocity){
             ofScopedLock(owner->mutex);
         owner->position+=owner->acceleration;

@@ -15,16 +15,34 @@ void ParticleHandler::setNumParticles(int num){
     numParticles = num;
 #ifndef FIXEDSIZE
     
-    int oldNum = MAX(0,position.rows()-1);
+    int oldNum = MAX(1,position.rows()-1);
     position.conservativeResize(num,MyMatrixType::ColsAtCompileTime);
-    
-    for(int i = oldNum; i < num ; i++){
-        position.row(i).setZero();
-    }
     velocity.conservativeResize(num,MyMatrixType::ColsAtCompileTime);
-    //    velocity.setZero();
     acceleration.conservativeResize(num,MyMatrixType::ColsAtCompileTime);
-    //    acceleration.setZero();
+    
+    
+    for(int i = oldNum ; i < num ; i++){
+        
+        position.row(i) = position.row(i%oldNum);
+        velocity.row(i) = velocity.row(i%oldNum);
+        acceleration.row(i) = acceleration.row(i%oldNum);
+    }
+    //    int step = (num-oldNum)/oldNum  ;
+    //    int lastW =(num-oldNum)%oldNum;
+    //    for(int i = 0 ; i < step ; i++){
+    //        int begin = oldNum*(1+i);
+    //        int width = (i==step-1)? lastW:oldNum;
+    //        if(width>0){
+    //        position.block(begin,0,width,COLNUM) = position.block(0,0,width,COLNUM).eval();
+    ////        velocity.block(begin,0,width,COLNUM).setZero();// = velocity.block(0,0,width,COLNUM);
+    ////        acceleration.block(begin,0,width,COLNUM).setZero();// = acceleration.block(0,0,width,COLNUM);
+    //        }
+    //
+    //    }
+    //    if(num>oldNum){
+    //    velocity.block(oldNum,0,num-oldNum,COLNUM).setZero();
+    //    acceleration.block(oldNum,0,num-oldNum,COLNUM).setZero();
+    //    }
 #endif
 #if NEED_TO_CAST_VERT
     floatPos = position.cast<float>();
@@ -53,9 +71,9 @@ void ParticleHandler::init(){
 #else
     //    setNumParticles(10000);
     //    initGrid();
-//    originType = 1;
-//    int dumb =originType;
-//    changeOrigin(dumb);
+    //    originType = 1;
+    //    int dumb =originType;
+    //    changeOrigin(dumb);
 #endif
     forceHandler->initForces();
     
@@ -64,26 +82,31 @@ void ParticleHandler::init(){
 
 void ParticleHandler::changeOrigin(int & type){
     
-        if(type==0){
-                        owner->stopForces();
-            initGrid(10000);
-            owner->startForces();
-            
-        }
+    if(type==0){
+        owner->stopForces();
+        initGrid(owner->defaultNumPart,false);
+        owner->startForces();
         
-        else{
-            ofDirectory d("models");
-            d.allowExt("obj");
-            d.listDir();
-            
-            vector<ofFile>  models = d.getFiles();
-//            ofLog() << d.getAbsolutePath();
-            if(models.size()){
+    }
+    else if( type == 1){
+        owner->stopForces();
+        initGrid(owner->defaultNumPart,true);
+        owner->startForces();
+    }
+    
+    else{
+        ofDirectory d("models");
+        d.allowExt("obj");
+        d.listDir();
+        
+        vector<ofFile>  models = d.getFiles();
+        //            ofLog() << d.getAbsolutePath();
+        if(models.size()){
             owner->stopForces();
-            loadModel(models[(type - 1)%models.size()]);
+            loadModel(models[(type - 2)%models.size()]);
             owner->startForces();
-            }
         }
+    }
     
 }
 void ParticleHandler::update(){
@@ -101,10 +124,11 @@ void ParticleHandler::update(){
 }
 
 
-void ParticleHandler::initGrid(int num){
+void ParticleHandler::initGrid(int num, bool flat){
     
     numParticles = num;
-    side = pow((double)numParticles,0.334);
+
+    side = pow((double)numParticles,flat?0.51:0.334);
     ofVec3f steps(getWidthSpace()/side);
     positionInit.resize(numParticles,MyMatrixType::ColsAtCompileTime);
     for(int i = 0  ; i < numParticles ; i++){
@@ -114,8 +138,9 @@ void ParticleHandler::initGrid(int num){
         positionInit.row(i)[0] = ii*steps.x;
         positionInit.row(i)[1] = jj*steps.y;
 #if COLNUM > 2
-        positionInit.row(i)[2] = kk*steps.z;
+        positionInit.row(i)[2] = flat?0:kk*steps.z;
 #endif
+    
     }
     
     //    int side = pow(numParticles,0.5);
@@ -140,45 +165,43 @@ void ParticleHandler::resetToInit(){
 }
 void ParticleHandler::initIndexes(){
     
-    
-    switch (lineStyle) {
-            
-            
-        case 1:{
-            nn->buildIndex(positionInit);
-            
-            int maxNN = 6;
-            
-            vector<size_t> foundNN;
-            vector<float> foundNNDist;
-            foundNNDist.resize(maxNN);
-            foundNN.resize(maxNN);
-            lineIdx.resize(numParticles*maxNN*2);
-            
+    if(kNN>0){
+        nn->buildIndex(positionInit);
+        
+        
+        
+        vector<size_t> foundNN;
+        vector<float> foundNNDist;
+        foundNNDist.resize(kNN);
+        foundNN.resize(kNN);
+        lineIdx.resize(numParticles*kNN*2);
+        
 #if NEED_TO_CAST_VERT
-            floatPos = positionInit.cast<float>();
-            for(int i = 0 ; i < numParticles;i++){
-                nn->findPointsWithinRadius(floatPos.row(i), 0.1*getWidthSpace(), activeLias[i]);
+        floatPos = positionInit.cast<float>();
+        for(int i = 0 ; i < numParticles;i++){
+            //                nn->findPointsWithinRadius(floatPos.row(i), 0.1*getWidthSpace(), activeLias[i]);
+            
+            nn->findNClosestPoints(floatPos.row(i),kNN, foundNN, foundNNDist);
 #else
-                for(int i = 0 ; i < numParticles;i++){
-                    nn->findNClosestPoints(positionInit.row(i),maxNN, foundNN, foundNNDist);
-                    for(int j = 0 ; j < maxNN ; j++){
-                        lineIdx[(i*maxNN + j)*2] = i;
-                        lineIdx[(i*maxNN + j)*2+1] =0;//foundNN[j] ;
-                        //                ofLog() << i*maxNN*2 + j << "," <<  i <<","<< foundNN[j];
-                    }
-#endif
+            for(int i = 0 ; i < numParticles;i++){
+                nn->findNClosestPoints(positionInit.row(i),kNN, foundNN, foundNNDist);
+                for(int j = 0 ; j < kNN ; j++){
+                    lineIdx[(i*kNN + j)*2] = i;
+                    lineIdx[(i*kNN + j)*2+1] =foundNN[j] ;
+                    //                ofLog() << i*maxNN*2 + j << "," <<  i <<","<< foundNN[j];
                 }
+#endif
             }
-        default:
+        }
+        else{
             lineIdx.resize(numParticles);
             for(int i = 0 ; i < numParticles ; i++){
                 lineIdx[i] = i;
             }
-            break;
+            
             
         }
-            vbo.setIndexData(&lineIdx[0], lineIdx.size(), GL_STATIC_DRAW);
+        vbo.setIndexData(&lineIdx[0], lineIdx.size(), GL_STATIC_DRAW);
     }
     
     
@@ -190,13 +213,15 @@ void ParticleHandler::initIndexes(){
     
     void ParticleHandler::drawLines(){
         //        vbo.updateIndexData(&lineIdx[0],lineIdx.size());
-        if(lineStyle>0){
-            
-            vbo.drawElements(lineStyle, lineIdx.size());
-        }
-        else{
+        if (lineStyle>0){
+            if(lineStyle==1){
+                
+                vbo.drawElements(lineStyle, lineIdx.size());
+            }
+            else {
                 vbo.drawElements(GL_LINES, lineIdx.size());
-             
+                
+            }
         }
         //        vbo.drawElements(GL_LINE_STRIP, numParticles);
     }
@@ -205,10 +230,10 @@ void ParticleHandler::initIndexes(){
     }
     void ParticleHandler::loadModel(ofFile file){
         bool addFaceCenter = true;
-//        string path="models/";//"/Users/Tintamar/Work/BO/Chrone/tests/";
-//        if(name=="")path+= "pyramid.obj";
-//        else path+=name;
-//        ofFile file(path);
+        //        string path="models/";//"/Users/Tintamar/Work/BO/Chrone/tests/";
+        //        if(name=="")path+= "pyramid.obj";
+        //        else path+=name;
+        //        ofFile file(path);
         ofLog() << "loading 3d " << file.getBaseName();
         file.open(file.getAbsolutePath());
         ofBuffer buf= file.readToBuffer();

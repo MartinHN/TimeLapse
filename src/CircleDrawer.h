@@ -45,6 +45,7 @@ public:
         switch (type){
             case 0:
                 if(getcluster()<sizes.size()){
+                    ofLog() <<getcluster();
                     r = rMult/5.0*getWidth()*sizes[getcluster()];
                 }
                 break;

@@ -30,6 +30,7 @@ class PhysicsHandler  : public ofThread{
         CPARAM(fr,.9,0,1);
         CPARAM(maxVel,0,0,10);
         CPARAM(onlyVelocity,true,false,true);
+        CPARAM(globalTimeFactor, 1,0.000001,1);
     }
     
     void threadedFunction() override;
@@ -39,7 +40,7 @@ class PhysicsHandler  : public ofThread{
     double actualDelay;
     
     
-    ofParameter<float> fr = .9,maxVel = 10;
+    ofParameter<float> fr = .9,maxVel = 10,globalTimeFactor;
     ofParameter<bool> onlyVelocity;
     ofParameterGroup params;
     

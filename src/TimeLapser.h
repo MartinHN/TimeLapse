@@ -12,6 +12,11 @@
 #include "AppViz.h"
 #include "ofApp.h"
 
+// commandline execution
+//#include <string>
+//#include <iostream>
+//#include <cstdio>
+//#include <memory>
 
 #define IM_W 1920
 #define IM_H 1080
@@ -23,8 +28,8 @@ public:
     TimeLapser(ofApp * a):AppViz(a){
         params.setName("TimeLapser");
         syphon.setup();
-        syphon.set("TimeLapseIn","Arena");
-        CPARAM(period,500,500,2000);
+        syphon.set("LooperIn","Arena");
+        CPARAM(period,50,50,1000);
         
         CPARAM(isRecording,false,false,true);
         CPARAM(isPlaying,false,false,true);
@@ -36,6 +41,7 @@ public:
         CPARAM(clear,false,false,true);
         CPARAM(speed,1,0,50);
         CPARAM(bank,0,0,8);
+        CPARAM(autoClear,true,false,true);
         isPlaying.addListener(this,&TimeLapser::beginPlay);
         isRecording.addListener(this,&TimeLapser::beginRec);
         clear.addListener(this,&TimeLapser::doClear);
@@ -85,9 +91,10 @@ public:
         return false;
     }
     
-    string getDataPathForBank(int b){
+    static string getDataPathForBank(int b){
         static string path  = ofToDataPath("../../../TimeLapseBank/",true);
-        return path+"/"+ofToString(b)+"/";
+        string num = ofToString(b);
+        return path+"/"+num+"/";
         
         
     }
@@ -99,7 +106,13 @@ public:
             syphon.draw(0,0);
         }
         else{
+            if(_isPlaying && recorderThread.player.isLoaded()){
+                recorderThread.player.update();
+                recorderThread.player.draw(0,0,app->widthOut,app->heightOut);
+            }
+            else{
             image.draw(0,0,app->widthOut,app->heightOut);
+            }
         }
     }
     ofxSyphonClient syphon;
@@ -108,6 +121,8 @@ public:
     
     void doClear(bool & b){
         if(b){
+            _isPlaying = false;
+            
             recordHead=0;
             ofDirectory d(getDataPathForBank(bank));
             d.listDir();
@@ -154,7 +169,15 @@ public:
             image.setFromPixels(pixBuf);
             image.update();
             if(saveRecorded){
-                string imgPath = getDataPathForBank(bank)+ofToString(recordHead)+".jpg";
+                string numS = ofToString(recordHead);
+                if(recordHead <10){
+                    numS = "0"+numS;
+                    
+                }
+                if(recordHead < 100){
+                    numS = "0"+numS;
+                }
+                string imgPath = getDataPathForBank(bank)+numS+".jpg";
                 image.save(imgPath);
             }
         }
@@ -165,6 +188,10 @@ public:
     
     void beginRec(bool & b){
         if(b){
+            if(autoClear){
+                bool dumb = true;
+                doClear(dumb);
+            }
             _isRecording = true;
             startRec = ofGetElapsedTimeMillis();
             //            recordHead = 0;
@@ -176,14 +203,29 @@ public:
                 frames[recordHead-1].duration = frames[recordHead].refTime - frames[recordHead-1].refTime;
                 frames[recordHead].duration = frames[recordHead-1].duration;
             }
+                        recLength = recordHead;
+            recorderThread.bank  = bank;
+            if(recorderThread.isThreadRunning()){
+                recorderThread.waitForThread();
+            }
+            recorderThread.frameRate = 1000.0/period;
+            recorderThread.threadedFunction();
             
-            recLength = recordHead;
         }
     }
     
+    
+
+    
+
     void beginPlay(bool & p){
         _isPlaying = p;
+        if(p)
+            recorderThread.player.play();
+        else
+            recorderThread.player.stop();
         if(p){
+
             startPlay = localTime;
             playHead = 0;
             
@@ -193,30 +235,30 @@ public:
         }
     }
     void updatePlay(){
-        if(_isPlaying){
-            ofDirectory dir(getDataPathForBank(bank));
-            dir.listDir();
-            //                 if(playHead < recLength-1){
-            if(playHead<dir.getFiles().size()-1){
-                unsigned long nextTime = frames[playHead+1].refTime ;
-                if((localTime - startPlay) >=nextTime  ){
-                    playHead++;
-                    image.load(dir.getFiles()[playHead]);
-                    
-                }
-                
-            }
-            else if (isLooping){
-                playHead = 0;
-                startPlay = localTime;
-            }
-            
-            
-        }
+//        if(_isPlaying){
+//            ofDirectory dir(getDataPathForBank(bank));
+//            dir.listDir();
+//            //                 if(playHead < recLength-1){
+//            if(playHead<dir.getFiles().size()-1){
+//                unsigned long nextTime = frames[playHead+1].refTime ;
+//                if((localTime - startPlay) >=nextTime  ){
+//                    playHead++;
+//                    image.load(dir.getFiles()[playHead]);
+//                    
+//                }
+//                
+//            }
+//            else if (isLooping){
+//                playHead = 0;
+//                startPlay = localTime;
+//            }
+//            
+//            
+//        }
     }
     
     
-    ofParameter<bool> isRecording,isPlaying,drawInput,isLooping,displayRecorded,clear,saveRecorded;
+    ofParameter<bool> isRecording,isPlaying,drawInput,isLooping,displayRecorded,clear,saveRecorded,autoClear;
     ofParameter<float> speed;
     ofParameter<int>bank;
     
@@ -235,8 +277,34 @@ public:
     vector<Frame> frames;
     ofFbo fuck;
     
-    
-    
+    class  ThreadedRecorder:public ofThread{
+    public:
+        int bank = 0;
+        float frameRate;
+        void threadedFunction() override{
+
+            string command ;
+            command = "cd "+TimeLapser::getDataPathForBank(bank)+";/usr/local/bin/ffmpeg -y -framerate "+ofToString(frameRate)+" -i %03d.jpg  -c:v mjpeg out.avi;";
+            ofLog() << exec(command.c_str(),false);
+            string loadPath=TimeLapser::getDataPathForBank(bank)+"out.avi";
+            ofLog()<<loadPath;
+            player.load(loadPath);
+        }
+        string exec(const char* cmd,bool returnRes = true) {
+            std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+            if (!pipe) return "ERROR";
+            char buffer[128];
+            std::string result = "";
+            while (returnRes && !feof(pipe.get())) {
+                if (fgets(buffer, 128, pipe.get()) != NULL)
+                    result += buffer;
+            }
+            return result;
+        }
+            ofVideoPlayer player;
+    };
+
+    ThreadedRecorder recorderThread;
     unsigned long lastRecTime;
     ofParameter<float> period;
     

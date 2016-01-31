@@ -56,10 +56,10 @@ public:
         params.setName("Particles");
         CPARAM(pointSize,8,0,50);
         CPARAM(lineWidth,8,0,50);
-        CPARAM(alphaGlobal,100,0,255);
+        CPARAM(drawAttr , false,false,true);
         CPARAM(zoom,1,0.1,10);
         CPARAM(distortFactor,1,0.01,10);
-
+        CPARAM(defaultNumPart,10000,27,500000);
         
         
         
@@ -68,6 +68,8 @@ public:
         for(auto &f:particlesList){
             f = new ParticleHandler(this);
             params.add(f->params);
+            f->originType  = 0;
+            
         }
         
         start();
@@ -94,8 +96,9 @@ public:
     vector<ParticleHandler*> particlesList;
     
     
-    ofParameter<float> pointSize,lineWidth,alphaGlobal,zoom,distortFactor;
-
+    ofParameter<float> pointSize,lineWidth,zoom,distortFactor;
+    ofParameter<int > defaultNumPart;
+    ofParameter<bool> drawAttr;
     void update() override;
     
 
@@ -119,12 +122,6 @@ public:
     void APPLY_ON_EXISTING_FORCE1(resetAttractors, attractorMap);
     
     
-    
-    void EXPOSE_ARG(color,ofColor);
-    
-    
-    
-
     
     
 

@@ -35,7 +35,7 @@ class ofApp : public ofBaseApp{
     
     void parseOsc();
 
-    void vizChanged(int & num);
+
     
     vector<float> HPCP;
     vector <float> MFCC;
@@ -58,12 +58,13 @@ class ofApp : public ofBaseApp{
      int heightOut = 1080;
     
 
-    ofParameter<float> transitionTime;
-    ofParameter<int> vizNumber,preset;
-    ofParameter<bool> editMode;
+
+    
+    ofParameter<int> vizNumber,preset,alphaFade;
+    
+//    ofParameter<ofColor> mainColor;
     VizuHandler viz;
-    void presetChanged(int & p);
-    void changeVizu(int num);
+
     
     ofxPanel * panel;
         ofParameterGroup params;

@@ -219,35 +219,37 @@ public:
 class Neighbors:public ForceHandler::Force{
 public:
     Neighbors(ForceHandler * f):ForceHandler::Force(f,"neighbors"){
-        CPARAM(k,0.02,0,0.01);
-        CPARAM(r,0.1,0,0.2);
-        CPARAM(l0,0.1,0,0.02);
+        CPARAM(k,0.0002,0,0.3);
+        CPARAM(distMax,0.1,0,0.2);
+        CPARAM(ripMax,0.1,0,0.2);
+        CPARAM(l0,0.01,0,0.20);
         
     }
-    ofParameter<float> k=0.02,r = 0.1,l0 = 0.1;
+    ofParameter<float> k,distMax,ripMax,l0 ;
 
+    
+    vector<unsigned int> myLineIdx;
     void changeNumParticles(int num) override{
 
-
+        myLineIdx = FORCE_OWNER->lineIdx;
     }
     
     void updateForce()override{
-        int idx = 0;
-        for(auto &l:FORCE_OWNER->activeLias){
-            for(auto & ll:l){
-                Array<MatReal,COLNUM,1> dist = FORCE_OWNER->position.row(ll.first) -FORCE_OWNER->position.row(idx);
+
+        float _l0 = l0*FORCE_OWNER->getWidthSpace();
+        for(int i = 0 ; i <myLineIdx.size()-1  ; i+=2){
+                Array<MatReal,COLNUM,1> dist = FORCE_OWNER->position.row(myLineIdx[i]) -FORCE_OWNER->position.row(myLineIdx[i+1]);
                 MatReal norm = dist.matrix().stableNorm();
-                if(norm>0.01*FORCE_OWNER->getWidthSpace()){
-                    double coef = (norm-sqrt(ll.second));
+                if(norm>0 && norm<ripMax*FORCE_OWNER->getWidthSpace()){
+                    double coef = (norm-_l0);
                     int sign = coef>0?1:-1;
-                    coef = std::min((float)abs(coef),(float)(r*FORCE_OWNER->getWidthSpace()));
-                FORCE_OWNER->acceleration.row(idx)+=k*sign*coef*(dist/norm);
+                    coef = std::min((float)abs(coef),(float)(distMax*FORCE_OWNER->getWidthSpace()));
+                FORCE_OWNER->acceleration.row(myLineIdx[i])-=k*sign*coef*(dist/norm);
+//                    FORCE_OWNER->acceleration.row(myLineIdx[i+1])+=k*sign*coef*(dist/norm);
                 }
             }
-            idx++;
-        }
-            
-//        FORCE_OWNER->acceleration += k*( FORCE_OWNER->positionInit-FORCE_OWNER->position.bottomLeftCorner(<#Index cRows#>, <#Index cCols#>)
+
+
         
     }
     

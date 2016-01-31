@@ -27,13 +27,16 @@ public:
         forceHandler =  new ForceHandler(this);
         physics = new PhysicsHandler(this);
         
-
+        
         init();
         CPARAM(lineStyle,0,0,10);
-            CPARAM(originType,0,0,10);
+        lineStyle.addListener(this,&ParticleHandler::changedLineStyle);
+        CPARAM(originType,0,0,10);
+        CPARAM(kNN,6,-1,20);
+        kNN.addListener(this ,&ParticleHandler::changedLineStyle);
         params.add(forceHandler->forcesParams);
         params.add(physics->params);
-                originType.addListener(this ,&ParticleHandler::changeOrigin);
+        originType.addListener(this ,&ParticleHandler::changeOrigin);
 
     };
     
@@ -45,22 +48,27 @@ public:
         delete physics;
     }
     
-
+    
     int side;
     void init();
     void changeOrigin(int & type);
-
+    
     void start(){
         resetToInit();
         forceHandler->startThread();
         physics->startThread();
     }
-    
+    void changedLineStyle(int & s){
+        
+        initIndexes();
+        forceHandler->changeNumParticles(numParticles);
+        
+    }
     
     ofParameterGroup params;
     ofParameter<int> lineStyle;
     ofParameter<int> originType;
-
+    ofParameter<int > kNN;
     
     void stopForces()
     {if(forceHandler!=nullptr){forceHandler->waitForThread(true);}};
@@ -68,11 +76,11 @@ public:
     void startForces(){forceHandler->startThread();};
     
     
-    void initGrid(int num);
+    void initGrid(int num,bool flat);
     void initIndexes();
     
     
-
+    
     double getWidthSpace();
     
     MyMatrixType position,positionInit;
@@ -81,14 +89,14 @@ public:
 #endif
     MyMatrixType velocity;
     MyMatrixType acceleration;
-
+    
     
     int numParticles;
     uint64_t deltaT;
     mutex mutex;
     
     ofVbo vbo;
-    ofColor color;
+    
     vector<ofVec3f> sizes;
     typedef std::pair<ofIndexType,ofIndexType>  IndexType;
     vector<IndexType> indexes;

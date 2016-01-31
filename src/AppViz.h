@@ -23,9 +23,9 @@ class AppViz {
     public :
     AppViz(ofApp * a):app(a){
         params.setName("viz_default");
-        CPARAM(smooth, 0.1,0,.5);
-        CPARAM(smoothDown,0.1,0,.5);
-        CPARAM(SubMean,true,false,true);
+//        CPARAM(smooth, 0.1,0,.5);
+//        CPARAM(smoothDown,0.1,0,.5);
+//        CPARAM(SubMean,true,false,true);
         initListeners();
         
         

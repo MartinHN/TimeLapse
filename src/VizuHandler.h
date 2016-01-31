@@ -37,10 +37,18 @@ public:
             midiIn.openPort();
         }
         midiIn.addListener(this);
+
+        CPARAM(vizNumber,1,0,10);
+        CPARAM(preset,0,0,5);
+        CPARAM(transitTime,0,0,4);
+        
+        CPARAM(mainColor,ofColor(255),ofColor(0,0,0,0),ofColor(255));
+        CPARAM(editMode,true,false,true);
+
         
         
-        alpha.set("alpha",1.0,0.,1.);
-        
+        preset.addListener(this,&VizuHandler::presetChanged);
+        vizNumber.addListener(this,&VizuHandler::vizChanged);
         
     };
     
@@ -50,23 +58,30 @@ public:
     AppViz* curVizu;
     AppViz * nextVizu;
     unsigned long startTransition;
-    float transitTime;
+
     float transitPct;
     bool isInTransit = false;
     int curNum = -1;
     ofxPanel * panel;
     ofxMidiIn midiIn;
-    ofParameter<float> alpha = 1.0;
+    ofParameter<ofColor> mainColor ;
+    ofParameter<bool> editMode;
+    ofParameter<float> transitTime;
+     ofParameter<int> vizNumber,preset;
     
-    
+    int setLeafChild(ofParameterGroup * pg,int root,int idx,int value);
     void draw(){
         ofEnableAlphaBlending();
         if(curVizu){
-            ofSetColor(255,255,255,isInTransit?alpha*255*(1-transitPct):alpha*255);
+            ofColor curCol = mainColor;
+            curCol.a =isInTransit?curCol.a*(1-transitPct):curCol.a;
+            ofSetColor(curCol);
             curVizu->draw();
         }
         if(nextVizu){
-            ofSetColor(255,255,255,isInTransit?alpha*255*(transitPct):alpha*255);
+            ofColor curCol = mainColor;
+            curCol.a =isInTransit?curCol.a*(transitPct):curCol.a;
+            ofSetColor(curCol);
             nextVizu->draw();
         }
         
@@ -85,6 +100,7 @@ public:
                 delete last;
                 nextVizu = nullptr;
                 isInTransit = false;
+                transitPct = 1;
                 
             }
         }
@@ -107,19 +123,19 @@ public:
             if(panel!=nullptr)delete panel;
             string pathSave = mainSavePath+ nextVizu->params.getName()+"_0"+".xml";
             panel = new ofxPanel(nextVizu->params,pathSave);
-            //        panel->loadFromFile(pathSave);
+           if(!editMode) panel->loadFromFile(pathSave);
             panel->setPosition(250, 10);
         }
     }
     
-    void setPreset(int p,bool load){
+    void setPreset(int p){
         
         if(panel!=nullptr && curVizu!=nullptr){
             string presetName = mainSavePath+ curVizu->params.getName()+"_"+ofToString(p)+".xml";
             delete panel;
             panel = new ofxPanel(curVizu->params,presetName);
             panel->setPosition(250, 10);
-            if(load)
+            if(!editMode)
                 panel->loadFromFile(presetName);
         }
     }
@@ -130,11 +146,43 @@ public:
     
     bool changeNumViz;
     int numViz;
+    ofParameterGroup params;
+    
+   
+    
+    void vizChanged(int & num){
+        setNext(num, transitTime);
+    }
+    void presetChanged(int & p){
+        setPreset(p);
+    }
     
     
-    
-    
-    
+//    bool parseOsc(ofxOscMessage &m){
+//        return false;
+////        vector<string> ad  =ofSplitString(m.getAddress(),"/");
+////        if(curVizu!=nullptr && ad.size()>1){
+////            ofParameterGroup pg = curVizu->params;
+////            int depth = 0;
+////            ofxOscArgType type = m.getArgType(0);
+////            for(int i = 0 ; i < pg.size() ; i++){
+////                ofParameter p = pg.get(i);
+////                if(p.getName() == ad[depth]){
+////                    if(p.isGroup)
+////                }
+//////                if(type = OFXOSC_TYPE_FLOAT){
+//////                    bool hasChild = pg.getBool(<#const string &name#>)
+//////                }
+//////                else if(type = OFXOSC_TYPE_INT32){
+//////                    
+//////                }
+////            }
+////            
+////        }
+////        else{
+////            return false;
+////        }
+//    }
     
     
 };

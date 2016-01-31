@@ -22,13 +22,17 @@ public:
         CPARAM(useHPCP,false,false,true);
         CPARAM(threshCreate,0,0,1);
         CPARAM(ttlReduce,true,false,true);
-        CPARAM(radius,0,0,300);
+        CPARAM(radius,0,0,600);
         CPARAM(randomNum,0,0,200);
         CPARAM(randomTime,0.,0,1.);
+        CPARAM(randomRadius,0.01,.1,1);
+                CPARAM(randomCenter,ofVec2f(0.5),ofVec2f(0),ofVec2f(1));
+        CPARAM(distortX,1,0,2);
         CPARAM(gttl,2,0,10);
         CPARAM(ttlAlpha,true,false,true);
         CPARAM(soft,false,false,true);
         CPARAM(timeMask,1,0,10);
+
         parts.clear();
     }
     
@@ -43,13 +47,15 @@ public:
     
     ofParameter<bool> useHPCP;
     ofParameter<float> threshCreate;
-    ofParameter<float> gttl;
+    ofParameter<float> gttl,distortX;
     ofParameter<bool> ttlReduce;
     ofParameter<float> radius;
     ofParameter<bool> ttlAlpha;
     ofParameter<float> timeMask;
     ofParameter<float> randomTime;
     ofParameter<bool> soft;
+    ofParameter<float > randomRadius;
+    ofParameter<ofVec2f> randomCenter;
     unsigned long lastRandom=0;
     float curRandom = 0;;
     ofParameter<float> randomNum;
@@ -91,7 +97,10 @@ public:
         for(auto & g : god){
 
             if(g>threshCreate && timeMasks[idx]<=0){
-                ofVec3f pos(ofRandom(getWidth()),ofRandom(getHeight()));
+                ofVec3f pos = ofVec2f(ofRandom(0,1)*randomRadius,0);
+                pos.rotate(0,0,ofRandom(0,360));
+                pos.x=(pos.x +randomCenter->x)*app->widthOut;
+                pos.y=( pos.y + randomCenter->y)*app->heightOut;
                 float rad = radius*ofRandom(1);
                 parts.push_back(particle(pos,rad,gttl.get()*1000.0));
                 timeMasks[idx] = 1000*timeMask;
@@ -103,10 +112,15 @@ public:
             if(ofGetElapsedTimeMillis() - lastRandom> curRandom){
                 ofLog() <<ofGetElapsedTimef();
                 for(int i = 0 ; i < randomNum;i++){
-                    ofVec3f pos(ofRandom(getWidth()),ofRandom(getHeight()));
+                    ofVec3f pos = ofVec2f(ofRandom(0,1)*randomRadius,0);
+                    pos.rotate(0,0,ofRandom(0,360));
+                    
+                    pos.x*= 2- ofClamp(distortX.get(), 1, 2);
+                    pos.y*=ofClamp(distortX.get(), 0, 1);
+                    pos.x=(pos.x +randomCenter->x)*app->widthOut;
+                    pos.y=( pos.y + randomCenter->y)*app->heightOut;
                     float rad = radius*ofRandom(1);
                     parts.push_back(particle(pos,rad,gttl.get()*1000.0));
-                    ofLog() << i;
                 }
                 
                 curRandom = randomTime*1000.0;
@@ -135,8 +149,11 @@ public:
     public:
         particle(ofVec3f & v,float radius,float ttl):ofVec3f(v),ttl(ttl),originTtl(ttl),radius(radius){
             ofLog() << "createP";
+            if(!dot.isAllocated()){
+                dot.load("shaders/dot.png");
+            }
         };
-        
+        static ofImage dot;
         float ttl;
         float originTtl;
         float radius;
@@ -145,8 +162,9 @@ public:
             float r = ttlReduce?cTTl*radius:radius;
             ofVec3f pos = *this;
             ofSetColor(255,255,255, ttlAlpha?cTTl*255:255);
-            ofDrawEllipse(pos,r,r);
-            ofLog() << "dr";
+            dot.draw(pos.x-r/2,pos.y-r/2,r,r);
+//            ofDrawEllipse(pos,r,r);
+//            ofLog() << "dr";
         }
         
         
@@ -157,5 +175,5 @@ public:
     vector<particle> parts;
     
 };
-
+ofImage Neige::particle::dot;
 #endif
