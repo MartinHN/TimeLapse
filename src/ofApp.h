@@ -41,7 +41,7 @@ class ofApp : public ofBaseApp{
     vector <float> MFCC;
     vector<float> enveloppes;
     int cluster;
-    
+    bool clusterUpdated;
     map<string,ofVec3f>    attractors;
     ofxLeapMotion leap;
     vector <ofxLeapMotionSimpleHand> simpleHands;

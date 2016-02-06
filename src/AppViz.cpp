@@ -18,7 +18,7 @@ vector<float> & AppViz::getHPCP(bool smooth){
 //    else{return vector<float>(0)}
 vector<float> & AppViz::getMFCC(bool smooth){    if(app){return smooth?MFCC_s:app->MFCC;}}
 int & AppViz::getcluster(){ if(app){return app->cluster;}};
-
+bool AppViz::hasCluster(){if(app) {return app->clusterUpdated;}};
 vector<float> & AppViz::getEnv(bool smooth) {if(app){return smooth?enveloppes_s:app->enveloppes;}}
 bool AppViz::hasEnv(){return app?app->enveloppes.size():false;}
 bool AppViz::hasMFCC(){

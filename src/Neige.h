@@ -22,9 +22,9 @@ public:
         CPARAM(useHPCP,false,false,true);
         CPARAM(threshCreate,0,0,1);
         CPARAM(ttlReduce,true,false,true);
-        CPARAM(radius,0,0,600);
+        CPARAM(radius,0,0,1000);
         CPARAM(randomNum,0,0,200);
-        CPARAM(randomTime,0.,0,1.);
+        CPARAM(randomTime,0.,0,.5);
         CPARAM(randomRadius,0.01,.1,1);
         CPARAM(randomCenter,ofVec2f(0.5),ofVec2f(0),ofVec2f(1));
         CPARAM(distortX,1,0,2);

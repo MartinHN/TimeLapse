@@ -18,4 +18,5 @@
 #include "MultiParticleHandler.hpp"
 #include "TimeLapser.h"
 #include "TreeLapser.h"
+#include "Cuber.h"
 #endif

@@ -139,6 +139,7 @@ void ofApp::updateLeap(){
 void ofApp::parseOsc(){
     ofxOscMessage m;
     hasOSC = false;
+    clusterUpdated = false;
     while(osc.getNextMessage(m)){
         hasOSC = true;
         
@@ -175,6 +176,7 @@ void ofApp::parseOsc(){
         }
         else if(ad[2] == "cluster"){
             cluster = m.getArgAsInt(0);
+            clusterUpdated = true;
         }
         
     }

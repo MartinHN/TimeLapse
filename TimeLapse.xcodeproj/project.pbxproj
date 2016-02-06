@@ -400,6 +400,7 @@
 		BDAFF6961BE240CB00DA7E50 /* GloveOSC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GloveOSC.h; sourceTree = "<group>"; };
 		BDAFF69B1BE243C700DA7E50 /* ConfigGlove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigGlove.h; sourceTree = "<group>"; };
 		BDC4390C1C560D99004C0ECE /* TreeLapser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TreeLapser.h; sourceTree = "<group>"; };
+		BDD607591C62075A00FB91D4 /* Cuber.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cuber.h; sourceTree = "<group>"; };
 		BDD976041BE0EE3900F719F4 /* Syphon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Syphon.framework; path = ../../../addons/ofxSyphon/libs/Syphon/lib/osx/Syphon.framework; sourceTree = "<group>"; };
 		BDD976071BE0F16500F719F4 /* AppViz.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppViz.cpp; sourceTree = "<group>"; };
 		BDD976081BE0F16500F719F4 /* AppViz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppViz.h; sourceTree = "<group>"; };
@@ -1381,6 +1382,7 @@
 			isa = PBXGroup;
 			children = (
 				BDD9760D1BE1015D00F719F4 /* VizWarpper.h */,
+				BDD607591C62075A00FB91D4 /* Cuber.h */,
 				BDC4390C1C560D99004C0ECE /* TreeLapser.h */,
 				BD5BD8CA1C511C5000B7124A /* TimeLapser.h */,
 				BDD9760B1BE0FE7000F719F4 /* SignalDrawer.h */,

@@ -106,8 +106,9 @@ public:
                 isInTransit = false;
                 transitPct = 1;
                 
-
+                if(curVizu){
                 oscParam.setup(curVizu->params,7555,"localhost",7556);
+                }
                 
             }
         }

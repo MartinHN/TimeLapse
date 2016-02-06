@@ -114,7 +114,6 @@ class AppViz {
     
     vector<float> HPCP_s;
     vector <float> MFCC_s;
-    vector<float> cluster_s;
     vector<float> enveloppes_s;
     
     
