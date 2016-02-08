@@ -127,7 +127,7 @@ void ParticleHandler::update(){
 void ParticleHandler::initGrid(int num, bool flat){
     
     numParticles = num;
-
+    
     side = pow((double)numParticles,flat?0.51:0.334);
     ofVec3f steps(getWidthSpace()/side);
     positionInit.resize(numParticles,MyMatrixType::ColsAtCompileTime);
@@ -140,7 +140,7 @@ void ParticleHandler::initGrid(int num, bool flat){
 #if COLNUM > 2
         positionInit.row(i)[2] = flat?0:kk*steps.z;
 #endif
-    
+        
     }
     
     //    int side = pow(numParticles,0.5);
@@ -178,100 +178,104 @@ void ParticleHandler::initIndexes(){
         
 #if NEED_TO_CAST_VERT
         floatPos = positionInit.cast<float>();
+#endif
+        
         for(int i = 0 ; i < numParticles;i++){
             //                nn->findPointsWithinRadius(floatPos.row(i), 0.1*getWidthSpace(), activeLias[i]);
             
+            //            nn->findNClosestPoints(floatPos.row(i),kNN, foundNN, foundNNDist);
+#if NEED_TO_CAST_VERT
             nn->findNClosestPoints(floatPos.row(i),kNN, foundNN, foundNNDist);
 #else
-            for(int i = 0 ; i < numParticles;i++){
-                nn->findNClosestPoints(positionInit.row(i),kNN, foundNN, foundNNDist);
-                for(int j = 0 ; j < kNN ; j++){
-                    lineIdx[(i*kNN + j)*2] = i;
-                    lineIdx[(i*kNN + j)*2+1] =foundNN[j] ;
-                    //                ofLog() << i*maxNN*2 + j << "," <<  i <<","<< foundNN[j];
-                }
+            nn->findNClosestPoints(positionInit.row(i),kNN, foundNN, foundNNDist);
 #endif
-            }
-        }
-        else{
-            lineIdx.resize(numParticles);
-            for(int i = 0 ; i < numParticles ; i++){
-                lineIdx[i] = i;
+            for(int j = 0 ; j < kNN ; j++){
+                lineIdx[(i*kNN + j)*2] = i;
+                lineIdx[(i*kNN + j)*2+1] =foundNN[j] ;
+                //                ofLog() << i*maxNN*2 + j << "," <<  i <<","<< foundNN[j];
             }
             
-            
         }
-        vbo.setIndexData(&lineIdx[0], lineIdx.size(), GL_STATIC_DRAW);
     }
-    
-    
-    void ParticleHandler::draw(){
-        vbo.draw( GL_POINTS , 0 ,numParticles);
+    else{
+        lineIdx.resize(numParticles);
+        for(int i = 0 ; i < numParticles ; i++){
+            lineIdx[i] = i;
+        }
         
         
     }
+    vbo.setIndexData(&lineIdx[0], lineIdx.size(), GL_STATIC_DRAW);
+}
+
+
+void ParticleHandler::draw(){
+    vbo.draw( GL_POINTS , 0 ,numParticles);
     
-    void ParticleHandler::drawLines(){
-        //        vbo.updateIndexData(&lineIdx[0],lineIdx.size());
-        if (lineStyle>0){
-                vbo.drawElements(lineStyle-1, lineIdx.size());
-        }
-        //        vbo.drawElements(GL_LINE_STRIP, numParticles);
+    
+}
+
+void ParticleHandler::drawLines(){
+    //        vbo.updateIndexData(&lineIdx[0],lineIdx.size());
+    if (lineStyle>0){
+        vbo.drawElements(lineStyle.get()-1, lineIdx.size());
     }
-    double ParticleHandler::getWidthSpace(){
-        return owner->widthSpace;
-    }
-    void ParticleHandler::loadModel(ofFile file){
-        bool addFaceCenter = true;
-        //        string path="models/";//"/Users/Tintamar/Work/BO/Chrone/tests/";
-        //        if(name=="")path+= "pyramid.obj";
-        //        else path+=name;
-        //        ofFile file(path);
-        ofLog() << "loading 3d " << file.getBaseName();
-        file.open(file.getAbsolutePath());
-        ofBuffer buf= file.readToBuffer();
-        ofBuffer::Lines lines = buf.getLines();
-        int numVec = 0,numFace=0;
-        for(auto l:lines){
-            if(l[0] == 'v'){
-                numVec++;
-            }
-            if (l[0] == 'f'){
-                numFace++;
-            }
+    //        vbo.drawElements(GL_LINE_STRIP, numParticles);
+}
+double ParticleHandler::getWidthSpace(){
+    return owner->widthSpace;
+}
+void ParticleHandler::loadModel(ofFile file){
+    bool addFaceCenter = true;
+    //        string path="models/";//"/Users/Tintamar/Work/BO/Chrone/tests/";
+    //        if(name=="")path+= "pyramid.obj";
+    //        else path+=name;
+    //        ofFile file(path);
+    ofLog() << "loading 3d " << file.getBaseName();
+    file.open(file.getAbsolutePath());
+    ofBuffer buf= file.readToBuffer();
+    ofBuffer::Lines lines = buf.getLines();
+    int numVec = 0,numFace=0;
+    for(auto l:lines){
+        if(l[0] == 'v'){
+            numVec++;
         }
-        if(numVec==0 )return;
-        numParticles = numVec+(addFaceCenter?numFace:0);
-        side = pow((double)numParticles,0.334);
-        positionInit.conservativeResize(numParticles, MyMatrixType::ColsAtCompileTime);
+        if (l[0] == 'f'){
+            numFace++;
+        }
+    }
+    if(numVec==0 )return;
+    numParticles = numVec+(addFaceCenter?numFace:0);
+    side = pow((double)numParticles,0.334);
+    positionInit.conservativeResize(numParticles, MyMatrixType::ColsAtCompileTime);
+    
+    int idx=0;
+    double wi = getWidthSpace()/2.0;
+    for(auto l:lines){
+        if(l[0] == 'v'){
+            vector<string> ll = ofSplitString(l, " ");
+            positionInit.row(idx)[0] = ofToFloat(ll[1])*wi;
+            positionInit.row(idx)[1] = ofToFloat(ll[2])*wi;
+            positionInit.row(idx)[2] = ofToFloat(ll[3])*wi;
+            idx++;
+        }
+        if(l[0]=='f' && addFaceCenter){
+            vector<string> ll = ofSplitString(l, " ");
+            int numCoins = ll.size()-1;
+            Array<MatReal,3,1> middle;
+            middle.setZero();
+            for(int i = 0 ; i < numCoins ; i++){
+                middle+=positionInit.row(ofToInt(ll[i+1]));
+            }
+            middle/=numCoins;
+            positionInit.row(idx) = middle;
+            idx++;
+        }
         
-        int idx=0;
-        double wi = getWidthSpace()/2.0;
-        for(auto l:lines){
-            if(l[0] == 'v'){
-                vector<string> ll = ofSplitString(l, " ");
-                positionInit.row(idx)[0] = ofToFloat(ll[1])*wi;
-                positionInit.row(idx)[1] = ofToFloat(ll[2])*wi;
-                positionInit.row(idx)[2] = ofToFloat(ll[3])*wi;
-                idx++;
-            }
-            if(l[0]=='f' && addFaceCenter){
-                vector<string> ll = ofSplitString(l, " ");
-                int numCoins = ll.size()-1;
-                Array<MatReal,3,1> middle;
-                middle.setZero();
-                for(int i = 0 ; i < numCoins ; i++){
-                    middle+=positionInit.row(ofToInt(ll[i+1]));
-                }
-                middle/=numCoins;
-                positionInit.row(idx) = middle;
-                idx++;
-            }
-            
-            
-            
-        }
-        file.close();
-        setNumParticles(numParticles);
+        
+        
     }
-    
+    file.close();
+    setNumParticles(numParticles);
+}
+
