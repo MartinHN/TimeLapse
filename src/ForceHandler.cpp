@@ -199,7 +199,7 @@ public:
                             int idx = i*COLNUM;
                             d.set( cpos[idx] -f.second.x,cpos[idx+1] -f.second.y,cpos[idx+2] -f.second.z);
                             d.normalize();
-                            dp.set(d[1],d[0],-d[0]*d[1]);
+                            dp.set(d[1],d[0],-k*d[0]*d[1]);
                             dp.normalize();
                             d.cross(dp);
                             //            d.normalize();
