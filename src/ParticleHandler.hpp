@@ -23,7 +23,7 @@ class ParticleHandler{
 public:
     ParticleHandler(MultiParticleHandler * _owner):owner(_owner){
         params.setName("partGroup");
-        setFPS(50);
+        setFPS(30);
         nn = make_shared<MyNN>();
         forceHandler =  new ForceHandler(this);
         physics = new PhysicsHandler(this);

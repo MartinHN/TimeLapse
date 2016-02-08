@@ -52,7 +52,7 @@ private:
     float lastPingTime;
     static ofxOscSender toServer;
     float lastACK;
-    
+    bool hasValidServer;
     void setConnected(bool & b);
     
 };

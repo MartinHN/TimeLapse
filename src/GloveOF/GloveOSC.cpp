@@ -35,7 +35,14 @@ GloveOSC::~GloveOSC(){
 
 void GloveOSC::init(){
     reciever.setup(LOCALPORT);
+    try{
     toServer.setup(SERVERIP, SERVERPORT);
+        hasValidServer = true;
+    }
+    catch(exception e){
+                hasValidServer = false;
+        ofLogError() << "unable to connect glove OSC to " <<SERVERIP << ":" <<SERVERPORT;
+    }
     cout << "server at :" << SERVERIP << endl;
     lastACK = 0;
     ofAddListener(ofEvents().update,this,&GloveOSC::update);
@@ -44,9 +51,10 @@ void GloveOSC::init(){
     isConnectedToServer.addListener(this, &GloveOSC::setConnected);
 }
 void GloveOSC::update(ofEventArgs & a){
-    
+    if(hasValidServer){
     registerOSC();
     parseMessage();
+    }
     
     
 }
@@ -91,7 +99,7 @@ void GloveOSC::parseMessage(){
     while(reciever.hasWaitingMessages()){
         
         ofxOscMessage m;
-        reciever.getNextMessage(&m);
+        reciever.getNextMessage(m);
         
         string addr = m.getAddress();
         GloveInstance *curGlove = NULL;

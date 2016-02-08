@@ -40,9 +40,10 @@ void MultiParticleHandler::update(){
         int num = ofToInt(a.first);
         if(num>1)num = -1;
         ofVec3f v =normalizedToWorld(a.second);
-        //        ofLog()<<num << ","<<v << "," <<a.second;
+//                ofLog()<<num << ","<<v << "," <<a.second;
         setAttractor(a.first,v,num);
     }
+
     update(-1);
     
 }

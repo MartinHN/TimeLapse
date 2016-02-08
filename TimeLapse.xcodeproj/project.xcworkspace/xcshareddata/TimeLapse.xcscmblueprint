@@ -1,23 +1,26 @@
 {
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "79F4BEF33277C0EFA49BD826BD43A7715104C293",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "941C8EBC89675D7CBE81399614DE647202D3D560" : 0,
-    "F69848794C3B8E65777F64980F34D78754B55DEA" : 0,
     "90E2F969A762FB62C413A0C44D1F334E6EC3F531" : 0,
     "2DE9C8846D9375EAACFABA8963120E8E7719BAF5" : 0,
+    "C84F3DCB9D3DB416182DDCCD5FDB7F1EFFAA332A" : 0,
+    "941C8EBC89675D7CBE81399614DE647202D3D560" : 0,
     "F4CCB893AFADB97238A965FD2F28717F1CAAE613" : 0,
-    "C84F3DCB9D3DB416182DDCCD5FDB7F1EFFAA332A" : 0
+    "F69848794C3B8E65777F64980F34D78754B55DEA" : 0,
+    "79F4BEF33277C0EFA49BD826BD43A7715104C293" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F863355E-F8BE-4F65-9665-0789EABF1913",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "941C8EBC89675D7CBE81399614DE647202D3D560" : "..\/..\/addons\/ofxPCA",
-    "F69848794C3B8E65777F64980F34D78754B55DEA" : "..\/..\/addons\/ofxTweener",
     "90E2F969A762FB62C413A0C44D1F334E6EC3F531" : "..\/..\/addons\/ofxMidi",
     "2DE9C8846D9375EAACFABA8963120E8E7719BAF5" : "..\/..",
+    "C84F3DCB9D3DB416182DDCCD5FDB7F1EFFAA332A" : "..\/..\/addons\/ofxNearestNeighbour",
+    "941C8EBC89675D7CBE81399614DE647202D3D560" : "..\/..\/addons\/ofxPCA",
     "F4CCB893AFADB97238A965FD2F28717F1CAAE613" : "..\/..\/addons\/ofxSyphon",
-    "C84F3DCB9D3DB416182DDCCD5FDB7F1EFFAA332A" : "..\/..\/addons\/ofxNearestNeighbour"
+    "F69848794C3B8E65777F64980F34D78754B55DEA" : "..\/..\/addons\/ofxTweener",
+    "79F4BEF33277C0EFA49BD826BD43A7715104C293" : "TimeLapse\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "TimeLapse",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
@@ -27,6 +30,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/MartinHN\/openFrameworks.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "2DE9C8846D9375EAACFABA8963120E8E7719BAF5"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/MartinHN\/TimeLapse.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "79F4BEF33277C0EFA49BD826BD43A7715104C293"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/danomatika\/ofxMidi",

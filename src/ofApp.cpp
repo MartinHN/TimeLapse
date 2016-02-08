@@ -16,13 +16,13 @@ void ofApp::setup(){
     syphon.setName("HeyOF");
     
     
-    ofSetFrameRate(50);
+    ofSetFrameRate(30);
     
     outTexture.allocate(widthOut, heightOut);
     
-    
+#ifdef LEAPMOTION
     leap.open();
-    
+#endif
 
 
 
@@ -107,6 +107,7 @@ void ofApp::removeLeapAttractors(){
     attractors = attrTmp;
 }
 void ofApp::updateLeap(){
+    #ifdef LEAPMOTION
     simpleHands = leap.getSimpleHands();
     if( leap.isFrameNew()){
         leap.setMappingX(-80, 80, 0,1);
@@ -135,6 +136,7 @@ void ofApp::updateLeap(){
         }
 
     }
+#endif
 }
 void ofApp::parseOsc(){
     ofxOscMessage m;
@@ -234,6 +236,8 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
     
 }
 void ofApp::exit(){
+    #ifdef LEAPMOTION
     // let's close down Leap and kill the controller
     leap.close();
+#endif
 }

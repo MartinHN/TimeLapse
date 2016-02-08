@@ -57,10 +57,6 @@
 		B266578FC55D23BFEBC042E7 /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECF8674C7975F1063C5E30CA /* ofxGuiGroup.cpp */; };
 		B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 802251BAF1B35B1D67B32FD0 /* ofxSliderGroup.cpp */; };
 		BCC8D420CBA9217E437D2D76 /* ofxRtMidiIn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F634AA6CA2E3C60F3B87B59A /* ofxRtMidiIn.cpp */; };
-		BD9F466F1C50DB2C0065635B /* libLeap.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BD9F46571C50DB2C0065635B /* libLeap.dylib */; };
-		BD9F46701C50DB2C0065635B /* Leap.lib in Frameworks */ = {isa = PBXBuildFile; fileRef = BD9F465A1C50DB2C0065635B /* Leap.lib */; };
-		BD9F46711C50DB2C0065635B /* Leapd.lib in Frameworks */ = {isa = PBXBuildFile; fileRef = BD9F465C1C50DB2C0065635B /* Leapd.lib */; };
-		BD9F46721C50DB2C0065635B /* ofxLeapMotion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BD9F46661C50DB2C0065635B /* ofxLeapMotion.cpp */; };
 		BDAFF6831BE11EAB00DA7E50 /* VizuHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BDAFF6821BE11EAB00DA7E50 /* VizuHandler.cpp */; };
 		BDAFF6881BE1437F00DA7E50 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDAFF6871BE1437F00DA7E50 /* CoreMIDI.framework */; };
 		BDAFF6971BE240CB00DA7E50 /* GloveInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BDAFF68F1BE240CB00DA7E50 /* GloveInstance.cpp */; };
@@ -504,9 +500,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD9F46711C50DB2C0065635B /* Leapd.lib in Frameworks */,
-				BD9F46701C50DB2C0065635B /* Leap.lib in Frameworks */,
-				BD9F466F1C50DB2C0065635B /* libLeap.dylib in Frameworks */,
 				BDAFF6881BE1437F00DA7E50 /* CoreMIDI.framework in Frameworks */,
 				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
 				BDD976051BE0EE3900F719F4 /* Syphon.framework in Frameworks */,
@@ -1758,7 +1751,6 @@
 				9D44DC88EF9E7991B4A09951 /* tinyxmlerror.cpp in Sources */,
 				5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */,
 				BCC8D420CBA9217E437D2D76 /* ofxRtMidiIn.cpp in Sources */,
-				BD9F46721C50DB2C0065635B /* ofxLeapMotion.cpp in Sources */,
 				3AEFE4FA8AD5C72671AD07F8 /* ofxRtMidiOut.cpp in Sources */,
 				1A86B7721CAEBC6F1C572C45 /* ofxBaseMidi.cpp in Sources */,
 				63F9FE1D90234FA6DE6F509E /* ofxMidi.cpp in Sources */,

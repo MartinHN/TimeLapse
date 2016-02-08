@@ -43,10 +43,10 @@ void ForceHandler::preComputeDists(){
 }
 
 void ForceHandler::doJob(){
+    
     ofScopedLock(owner->mutex);
-    
-    
     owner->acceleration.setZero();
+    
     preComputeDists();
     if(owner->numParticles>0){
     for(auto k :availableForces){
@@ -90,7 +90,7 @@ void ForceHandler::activateForce(string name,bool t){
 }
 
 void ForceHandler::setAttractor(const string & name,ofVec3f pos){
-ofScopedLock lk(mutex);
+//ofScopedLock lk(mutex);
     asyncAttractors[name] = pos;
 }
 void ForceHandler::removeAttractor(const string & name){
@@ -237,15 +237,18 @@ public:
     void updateForce()override{
 
         float _l0 = l0*FORCE_OWNER->getWidthSpace();
+        double _ripMax = ripMax*FORCE_OWNER->getWidthSpace();
         for(int i = 0 ; i <myLineIdx.size()-1  ; i+=2){
                 Array<MatReal,COLNUM,1> dist = FORCE_OWNER->position.row(myLineIdx[i]) -FORCE_OWNER->position.row(myLineIdx[i+1]);
-                MatReal norm = dist.matrix().stableNorm();
-                if(norm>0 && norm<ripMax*FORCE_OWNER->getWidthSpace()){
+                MatReal norm = dist.matrix().norm();
+                if(norm>0 && norm<_ripMax){
                     double coef = (norm-_l0);
-                    int sign = coef>0?1:-1;
+
                     coef = std::min((float)abs(coef),(float)(distMax*FORCE_OWNER->getWidthSpace()));
-                FORCE_OWNER->acceleration.row(myLineIdx[i])-=k*sign*coef*(dist/norm);
-//                    FORCE_OWNER->acceleration.row(myLineIdx[i+1])+=k*sign*coef*(dist/norm);
+                    double ksign = (coef>0?k.get():-k.get()) / norm ;
+                    dist*=ksign;
+                FORCE_OWNER->acceleration.row(myLineIdx[i])-=dist;
+//                    FORCE_OWNER->acceleration.row(myLineIdx[i+1])+=dist;
                 }
             }
 

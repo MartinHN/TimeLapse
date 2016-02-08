@@ -6,8 +6,9 @@
 #include "AppViz.h"
 #include "ofxMidi.h"
 #include "ofxGUI.h"
+#ifdef LEAPMOTION
 #include "ofxLeapMotion.h"
-
+#endif
 #include "VizuHandler.h"
 
 
@@ -43,8 +44,10 @@ class ofApp : public ofBaseApp{
     int cluster;
     bool clusterUpdated;
     map<string,ofVec3f>    attractors;
+    #ifdef LEAPMOTION
     ofxLeapMotion leap;
     vector <ofxLeapMotionSimpleHand> simpleHands;
+#endif
     void removeLeapAttractors();
     void updateLeap();
     ofxOscReceiver osc;

@@ -16,8 +16,8 @@
 #define CPARAM(x,v,m,M) x.set(#x,v,m,M);params.add(x);
 //#define DIFFERENT_SIZES
 //#define FIXEDSIZE 1000//27
-typedef float MatReal;
-#define NEED_TO_CAST_VERT 0
+typedef double MatReal;
+#define NEED_TO_CAST_VERT 1
 //typedef  Matrix<MatReal,Dynamic,3,RowMajor|AutoAlign> MyMatrixType;
 #ifdef FIXEDSIZE
 #define ROWTYPE FIXEDSIZE
