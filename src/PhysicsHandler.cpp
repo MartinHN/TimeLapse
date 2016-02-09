@@ -17,7 +17,11 @@ void PhysicsHandler::threadedFunction() {
         //        actualDelay = owner->deltaT;
         millilast = ofGetElapsedTimeMillis();
         doJob();
+#ifndef  SPLIT_THREAD
+        owner->forceHandler->doJob();
+#endif
         int toWait =owner->deltaT - (ofGetElapsedTimeMillis() - millilast);
+
         if(toWait>0){ofSleepMillis(toWait);};
         if(actualDelay>1.3*owner->deltaT){ofLog() <<"highpressure Physics" << actualDelay;}
         

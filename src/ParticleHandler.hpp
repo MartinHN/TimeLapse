@@ -9,6 +9,9 @@
 #ifndef ParticleHandler_hpp
 #define ParticleHandler_hpp
 
+
+//#define SPLIT_THREAD
+
 #include <stdio.h>
 
 #include "ofMain.h"
@@ -16,6 +19,9 @@
 #include "PhysicsHandler.hpp"
 #include "ConfigParticles.h"
 #include "ofxNearestNeighbour.h"
+
+
+
 
 class MultiParticleHandler;
 
@@ -25,8 +31,9 @@ public:
         params.setName("partGroup");
         setFPS(30);
         nn = make_shared<MyNN>();
-        forceHandler =  new ForceHandler(this);
         physics = new PhysicsHandler(this);
+        forceHandler =  new ForceHandler(this);
+
         
         
         init();
@@ -43,8 +50,9 @@ public:
     
     ~ParticleHandler(){
         physics->waitForThread(true);
+#ifdef SPLIT_THREAD
         forceHandler->waitForThread(true);
-        
+#endif
         delete forceHandler;
         delete physics;
     }
@@ -56,7 +64,9 @@ public:
     
     void start(){
         resetToInit();
+#ifdef SPLIT_THREAD
         forceHandler->startThread();
+#endif
         physics->startThread();
     }
     void changedLineStyle(int & s){
@@ -72,9 +82,23 @@ public:
     ofParameter<int > kNN;
     
     void stopForces()
-    {if(forceHandler!=nullptr){forceHandler->waitForThread(true);}};
+    {if(forceHandler!=nullptr){
+#ifdef SPLIT_THREAD
+        forceHandler->waitForThread(true);
+#else
+        physics->waitForThread(true);
+#endif
+    }
     
-    void startForces(){forceHandler->startThread();};
+    };
+    
+    void startForces(){
+        #ifdef SPLIT_THREAD
+        forceHandler->startThread();
+#else
+        physics->startThread();
+#endif
+    };
     
     
     void initGrid(int num,bool flat);
