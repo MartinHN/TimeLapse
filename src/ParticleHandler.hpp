@@ -1,4 +1,4 @@
-//
+ //
 //  ParticleHandler.hpp
 //  Particles
 //
@@ -38,7 +38,7 @@ public:
         
         init();
         CPARAM(lineStyle,0,0,10);
-        lineStyle.addListener(this,&ParticleHandler::changedLineStyle);
+//        lineStyle.addListener(this,&ParticleHandler::changedLineStyle);
         CPARAM(originType,0,0,10);
         CPARAM(kNN,6,-1,20);
         kNN.addListener(this ,&ParticleHandler::changedLineStyle);
@@ -70,9 +70,13 @@ public:
         physics->startThread();
     }
     void changedLineStyle(int & s){
+        //avoid doublons from mouse release, not so pretty..
         
+        if(kNN==lastkNN)
+            return;
         initIndexes();
         forceHandler->changeNumParticles(numParticles);
+        lastkNN = kNN;
         
     }
     
@@ -80,6 +84,8 @@ public:
     ofParameter<int> lineStyle;
     ofParameter<int> originType;
     ofParameter<int > kNN;
+    int lastkNN;
+    int lastOriginType;
     
     void stopForces()
     {if(forceHandler!=nullptr){
@@ -126,6 +132,7 @@ public:
     typedef std::pair<ofIndexType,ofIndexType>  IndexType;
     vector<IndexType> indexes;
     vector<unsigned int> lineIdx;
+    vector<float> lineDists;
     void setNumParticles(int num);
     void setFPS(int fps){
         deltaT = 1000.0/fps;
@@ -145,9 +152,7 @@ public:
     typedef itg::NearestNeighbour<Array<float,COLNUM,1> >  MyNN;
     shared_ptr<MyNN>  nn;
     
-    typedef pair<size_t, float> match;
-    typedef vector<match> matches;
-    vector <matches> activeLias;
+
 };
 
 #endif /* ParticleHandler_hpp */

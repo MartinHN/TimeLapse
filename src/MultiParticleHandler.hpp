@@ -59,7 +59,7 @@ public:
         CPARAM(drawAttr , false,false,true);
         CPARAM(zoom,1,0.1,10);
         CPARAM(distortFactor,1,0.01,10);
-        CPARAM(defaultNumPart,10000,27,20000);
+        CPARAM(defaultNumPart,10000,27,200000);
         
         
         
@@ -68,12 +68,13 @@ public:
         for(auto &f:particlesList){
             f = new ParticleHandler(this);
             params.add(f->params);
-            f->originType  = 0;
-            
         }
-        
         start();
-
+        
+        
+        for(auto &f:particlesList){
+            f->originType = 0;
+        }
     }
     ~MultiParticleHandler(){
 

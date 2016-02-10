@@ -360,27 +360,6 @@
 		BD0E7AC8BE205034D5B377A6 /* ofxMidiMessage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMidiMessage.h; path = ../../../addons/ofxMidi/src/ofxMidiMessage.h; sourceTree = SOURCE_ROOT; };
 		BD5BD8CA1C511C5000B7124A /* TimeLapser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeLapser.h; sourceTree = "<group>"; };
 		BD9F46201C4FC5C40065635B /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = bin/data/shaders; sourceTree = SOURCE_ROOT; };
-		BD9F46221C50DB2C0065635B /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		BD9F46231C50DB2C0065635B /* addon_config.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = addon_config.mk; sourceTree = "<group>"; };
-		BD9F464F1C50DB2C0065635B /* Leap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Leap.h; sourceTree = "<group>"; };
-		BD9F46501C50DB2C0065635B /* LeapMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeapMath.h; sourceTree = "<group>"; };
-		BD9F46531C50DB2C0065635B /* libLeap.so */ = {isa = PBXFileReference; lastKnownFileType = file; path = libLeap.so; sourceTree = "<group>"; };
-		BD9F46551C50DB2C0065635B /* libLeap.so */ = {isa = PBXFileReference; lastKnownFileType = file; path = libLeap.so; sourceTree = "<group>"; };
-		BD9F46571C50DB2C0065635B /* libLeap.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libLeap.dylib; sourceTree = "<group>"; };
-		BD9F46591C50DB2C0065635B /* Leap.dll */ = {isa = PBXFileReference; lastKnownFileType = file; path = Leap.dll; sourceTree = "<group>"; };
-		BD9F465A1C50DB2C0065635B /* Leap.lib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = Leap.lib; sourceTree = "<group>"; };
-		BD9F465B1C50DB2C0065635B /* Leapd.dll */ = {isa = PBXFileReference; lastKnownFileType = file; path = Leapd.dll; sourceTree = "<group>"; };
-		BD9F465C1C50DB2C0065635B /* Leapd.lib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = Leapd.lib; sourceTree = "<group>"; };
-		BD9F465D1C50DB2C0065635B /* msvcp120.dll */ = {isa = PBXFileReference; lastKnownFileType = file; path = msvcp120.dll; sourceTree = "<group>"; };
-		BD9F465E1C50DB2C0065635B /* msvcp120d.dll */ = {isa = PBXFileReference; lastKnownFileType = file; path = msvcp120d.dll; sourceTree = "<group>"; };
-		BD9F465F1C50DB2C0065635B /* msvcr120.dll */ = {isa = PBXFileReference; lastKnownFileType = file; path = msvcr120.dll; sourceTree = "<group>"; };
-		BD9F46601C50DB2C0065635B /* msvcr120d.dll */ = {isa = PBXFileReference; lastKnownFileType = file; path = msvcr120d.dll; sourceTree = "<group>"; };
-		BD9F46611C50DB2C0065635B /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
-		BD9F46621C50DB2C0065635B /* version.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = version.txt; sourceTree = "<group>"; };
-		BD9F46631C50DB2C0065635B /* ofxaddons_thumbnail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ofxaddons_thumbnail.png; sourceTree = "<group>"; };
-		BD9F46641C50DB2C0065635B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		BD9F46661C50DB2C0065635B /* ofxLeapMotion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxLeapMotion.cpp; sourceTree = "<group>"; };
-		BD9F46671C50DB2C0065635B /* ofxLeapMotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxLeapMotion.h; sourceTree = "<group>"; };
 		BDAFF6811BE11DE300DA7E50 /* VizuHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VizuHandler.h; sourceTree = "<group>"; };
 		BDAFF6821BE11EAB00DA7E50 /* VizuHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VizuHandler.cpp; sourceTree = "<group>"; };
 		BDAFF6841BE1211E00DA7E50 /* CircleDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CircleDrawer.h; sourceTree = "<group>"; };
@@ -1243,7 +1222,6 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
-				BD9F46211C50DB2C0065635B /* ofxLeapMotion */,
 				3F7068151C4D13F800DBC8ED /* ofxNearestNeighbour */,
 				3F70683C1C4D13F900DBC8ED /* ofxPCA */,
 				480A780D8D0308AE4A368801 /* ofxGui */,
@@ -1276,99 +1254,6 @@
 				9F7986DC4EB05E75FCE2C777 /* ofxOscSender.h */,
 			);
 			name = src;
-			sourceTree = "<group>";
-		};
-		BD9F46211C50DB2C0065635B /* ofxLeapMotion */ = {
-			isa = PBXGroup;
-			children = (
-				BD9F46221C50DB2C0065635B /* .gitignore */,
-				BD9F46231C50DB2C0065635B /* addon_config.mk */,
-				BD9F464D1C50DB2C0065635B /* libs */,
-				BD9F46631C50DB2C0065635B /* ofxaddons_thumbnail.png */,
-				BD9F46641C50DB2C0065635B /* README.md */,
-				BD9F46651C50DB2C0065635B /* src */,
-			);
-			name = ofxLeapMotion;
-			path = ../../../addons/ofxLeapMotion;
-			sourceTree = "<group>";
-		};
-		BD9F464D1C50DB2C0065635B /* libs */ = {
-			isa = PBXGroup;
-			children = (
-				BD9F464E1C50DB2C0065635B /* include */,
-				BD9F46511C50DB2C0065635B /* lib */,
-				BD9F46611C50DB2C0065635B /* README.txt */,
-				BD9F46621C50DB2C0065635B /* version.txt */,
-			);
-			path = libs;
-			sourceTree = "<group>";
-		};
-		BD9F464E1C50DB2C0065635B /* include */ = {
-			isa = PBXGroup;
-			children = (
-				BD9F464F1C50DB2C0065635B /* Leap.h */,
-				BD9F46501C50DB2C0065635B /* LeapMath.h */,
-			);
-			path = include;
-			sourceTree = "<group>";
-		};
-		BD9F46511C50DB2C0065635B /* lib */ = {
-			isa = PBXGroup;
-			children = (
-				BD9F46521C50DB2C0065635B /* linux */,
-				BD9F46541C50DB2C0065635B /* linux64 */,
-				BD9F46561C50DB2C0065635B /* osx */,
-				BD9F46581C50DB2C0065635B /* winvs */,
-			);
-			path = lib;
-			sourceTree = "<group>";
-		};
-		BD9F46521C50DB2C0065635B /* linux */ = {
-			isa = PBXGroup;
-			children = (
-				BD9F46531C50DB2C0065635B /* libLeap.so */,
-			);
-			path = linux;
-			sourceTree = "<group>";
-		};
-		BD9F46541C50DB2C0065635B /* linux64 */ = {
-			isa = PBXGroup;
-			children = (
-				BD9F46551C50DB2C0065635B /* libLeap.so */,
-			);
-			path = linux64;
-			sourceTree = "<group>";
-		};
-		BD9F46561C50DB2C0065635B /* osx */ = {
-			isa = PBXGroup;
-			children = (
-				BD9F46571C50DB2C0065635B /* libLeap.dylib */,
-			);
-			path = osx;
-			sourceTree = "<group>";
-		};
-		BD9F46581C50DB2C0065635B /* winvs */ = {
-			isa = PBXGroup;
-			children = (
-				BD9F46591C50DB2C0065635B /* Leap.dll */,
-				BD9F465A1C50DB2C0065635B /* Leap.lib */,
-				BD9F465B1C50DB2C0065635B /* Leapd.dll */,
-				BD9F465C1C50DB2C0065635B /* Leapd.lib */,
-				BD9F465D1C50DB2C0065635B /* msvcp120.dll */,
-				BD9F465E1C50DB2C0065635B /* msvcp120d.dll */,
-				BD9F465F1C50DB2C0065635B /* msvcr120.dll */,
-				BD9F46601C50DB2C0065635B /* msvcr120d.dll */,
-			);
-			path = winvs;
-			sourceTree = "<group>";
-		};
-		BD9F46651C50DB2C0065635B /* src */ = {
-			isa = PBXGroup;
-			children = (
-				BD9F46661C50DB2C0065635B /* ofxLeapMotion.cpp */,
-				BD9F46671C50DB2C0065635B /* ofxLeapMotion.h */,
-			);
-			path = src;
 			sourceTree = "<group>";
 		};
 		BDAFF6891BE143A200DA7E50 /* Vizus */ = {

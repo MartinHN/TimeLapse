@@ -28,9 +28,10 @@ class PhysicsHandler  : public ofThread{
         params.setName("physics");
         
         CPARAM(fr,.9,0,1);
-        CPARAM(maxVel,0,0,10);
+        CPARAM(maxVel,0,0,.1);
         CPARAM(onlyVelocity,true,false,true);
-        CPARAM(globalTimeFactor, 1,0.000001,1);
+        CPARAM(globalTimeFactor, 1,0.000001,5);
+        CPARAM(wrapSpace,false,false,true);
     }
     
     void threadedFunction() override;
@@ -41,7 +42,7 @@ class PhysicsHandler  : public ofThread{
     
     
     ofParameter<float> fr = .9,maxVel = 10,globalTimeFactor;
-    ofParameter<bool> onlyVelocity;
+    ofParameter<bool> onlyVelocity,wrapSpace;
     ofParameterGroup params;
     
     ParticleHandler * owner;

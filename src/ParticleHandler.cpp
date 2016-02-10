@@ -81,7 +81,9 @@ void ParticleHandler::init(){
 
 
 void ParticleHandler::changeOrigin(int & type){
-    
+    if(lastOriginType==originType){
+        return;
+    }
     if(type==0){
         owner->stopForces();
         initGrid(owner->defaultNumPart,false);
@@ -110,6 +112,7 @@ void ParticleHandler::changeOrigin(int & type){
     
 }
 void ParticleHandler::update(){
+
 #if NEED_TO_CAST_VERT
     floatPos = position.cast<float>();
     vbo.updateVertexData((float*)floatPos.data(),numParticles);
@@ -164,22 +167,21 @@ void ParticleHandler::resetToInit(){
     acceleration.setZero();
 }
 void ParticleHandler::initIndexes(){
-    
+
     if(kNN>0){
         nn->buildIndex(positionInit);
-        
-        
-        
+    
         vector<size_t> foundNN;
         vector<float> foundNNDist;
         foundNNDist.resize(kNN);
         foundNN.resize(kNN);
         lineIdx.resize(numParticles*kNN*2);
-        
+        lineDists.resize(numParticles*kNN);
+
 #if NEED_TO_CAST_VERT
         floatPos = positionInit.cast<float>();
 #endif
-        
+        int foundIdx = 0;
         for(int i = 0 ; i < numParticles;i++){
             //                nn->findPointsWithinRadius(floatPos.row(i), 0.1*getWidthSpace(), activeLias[i]);
             
@@ -190,22 +192,44 @@ void ParticleHandler::initIndexes(){
             nn->findNClosestPoints(positionInit.row(i),kNN, foundNN, foundNNDist);
 #endif
             for(int j = 0 ; j < kNN ; j++){
-                lineIdx[(i*kNN + j)*2] = i;
-                lineIdx[(i*kNN + j)*2+1] =foundNN[j] ;
+                bool found = false;
+                for(int l = 0 ; l < foundIdx ; l++){
+                    if((lineIdx[l*2] == foundNN[j] &&
+                        lineIdx[(l)*2+1] == i )
+                       ){
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found && foundNNDist[j]>0){
+                    lineIdx[foundIdx*2] = i;
+                    lineIdx[foundIdx*2+1] =foundNN[j] ;
+                    lineDists[foundIdx] = sqrt(foundNNDist[j]);
+
+                    foundIdx++;
+                }
                 //                ofLog() << i*maxNN*2 + j << "," <<  i <<","<< foundNN[j];
             }
             
+            
+            
         }
+        lineIdx.resize(foundIdx*2);
+        lineDists.resize(foundIdx);
     }
     else{
         lineIdx.resize(numParticles);
-        for(int i = 0 ; i < numParticles ; i++){
+        lineDists.resize(numParticles);
+        for(int i = 0 ; i < numParticles-1 ; i++){
             lineIdx[i] = i;
+            lineIdx[i+1] = i+1;
+            lineDists[i] = (positionInit.row(lineIdx[i])-positionInit.row(lineIdx[i+1])).matrix().norm();
         }
         
         
     }
     vbo.setIndexData(&lineIdx[0], lineIdx.size(), GL_STATIC_DRAW);
+
 }
 
 
