@@ -122,7 +122,7 @@ public:
     void setNext(int num,float time){
         
         mainSavePath = ofToDataPath("../../../preset/",true);
-        mainSavePath+="/";
+//        mainSavePath+="/";
         ofLog() << "saving preset in " << mainSavePath;
         if(num == curNum)return;
         if(nextVizu)delete nextVizu;

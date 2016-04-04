@@ -345,7 +345,7 @@ class Wind:public ForceHandler::Force{
     }
 
     void linkParams()override{
-        CPARAM(strength,0,0,100);
+        CPARAM(strength,0,0,1);
         CPARAM(spread,.1,0,1);
         CPARAM(speed,1,0,100);
     }
