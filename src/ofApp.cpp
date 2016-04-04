@@ -155,7 +155,8 @@ void ofApp::parseOsc(){
                 attractors.erase(attractName);
             }
             else{
-                attractors[attractName] = ofVec3f(m.getArgAsFloat(1),m.getArgAsFloat(2),0);
+
+                attractors[attractName] = ofVec3f(m.getArgAsFloat(1),m.getArgAsFloat(2),m.getNumArgs()==4?m.getArgAsFloat(3):0);
             }
             
         }
