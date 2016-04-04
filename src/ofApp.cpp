@@ -9,7 +9,7 @@ void ofApp::setup(){
     osc.setup(6001);
 #ifndef DEBUG
     ofLog() << ofToDataPath("",true);
-    ofSetDataPathRoot("/");
+    ofSetDataPathRoot("../Resources/");
     ofLog() << ofToDataPath("",true);
 #endif
     
