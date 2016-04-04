@@ -29,7 +29,7 @@ class PhysicsHandler  : public ofThread{
         
         CPARAM(fr,.9,0,1);
         CPARAM(maxVel,0,0,.1);
-        CPARAM(onlyVelocity,true,false,true);
+        CPARAM(onlyVelocity,false,false,true);
         CPARAM(globalTimeFactor, 1,0.000001,5);
         CPARAM(wrapSpace,false,false,true);
     }

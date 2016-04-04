@@ -72,6 +72,6 @@ class ofApp : public ofBaseApp{
     ofxPanel * panel;
         ofParameterGroup params;
     
-    GloveOSC  glove;
-		
+//    GloveOSC  glove;
+
 };

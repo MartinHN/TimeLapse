@@ -39,8 +39,8 @@ void ofApp::setup(){
     
     vizNumber = 0;
     
-    glove.init();
-    
+//    glove.init();
+
     
     outTexture.begin();
     ofClear(0);

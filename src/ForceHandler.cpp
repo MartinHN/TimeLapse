@@ -50,7 +50,7 @@ void ForceHandler::doJob(){
     preComputeDists();
     if(owner->numParticles>0){
         for(auto k :availableForces){
-            if(k.second->active){
+            if(k.second->isActive){
                 //            ofScopedLock lk(mutex);
                 k.second->updateForce();
             }
@@ -62,10 +62,10 @@ void ForceHandler::doJob(){
 }
 
 ForceHandler::Force::Force(ForceHandler * f,string name):forceOwner(f){
-    active = false;
+    isActive = false;
     forceOwner->availableForces[name] = this;
     params.setName(name);
-    CPARAM(active,true,false,true);
+    CPARAM(isActive,true,false,true);
     forceOwner->forcesParams.add(params);
 
 }
@@ -76,7 +76,7 @@ void ForceHandler::activateForce(string name,bool t){
     //    if(t){
     ForceIt f = availableForces.find(name);
     if(f!=availableForces.end()){
-        availableForces[name]->active = t;// = f->second;
+        availableForces[name]->isActive = t;// = f->second;
     }
 
     //    }
@@ -133,10 +133,10 @@ public:
         CPARAM(k,.1,0,10);
         CPARAM(l0,.1,0,1);
         CPARAM(rMin,0,0,1);
-        CPARAM(rMax,1,0,1);
+        CPARAM(rMax,0,0,1);
 
         CPARAM(perAttr,false,false,true);
-        CPARAM(numPerAttr,1,0,100);
+        CPARAM(numPerAttr,0,0,100);
         CPARAM(power,1,-3,3);
     }
     //    Matrix<MatReal,1,3> pos;
@@ -151,7 +151,7 @@ public:
         double _rMin = rMin * FORCE_OWNER->getWidthSpace();
         int idx = 0;
 
-        int step = FORCE_OWNER->numParticles /(perAttr.get()? MAX(forceOwner->attractors.size(),1):1);
+        int step = FORCE_OWNER->numParticles /(perAttr.get()? MAX(forceOwner->attractors.size()+1,1):1);
         if(numPerAttr>0){
             step = numPerAttr;
         }
@@ -160,10 +160,10 @@ public:
         forceOwner->buf3D.resize(step,3);
         for(auto & f:forceOwner->attractors){
             forceOwner->buf1D  =   forceOwner->attrNorm[f.first].block(idx,0,step,1).col(0);
-            if(_rMax>0 && _rMax>_rMin){
-                rMinMaxMask=forceOwner->buf1D.cwiseMin(_rMax).cwiseEqual(_rMax).cast<MatReal>();
+//            if(_rMax>0 && _rMax>_rMin){
+//                rMinMaxMask=forceOwner->buf1D.cwiseMin(_rMax).cwiseEqual(_rMax).cast<MatReal>();
                 //                rMinMaxMask = rMinMaxMask.array().cwiseProduct(forceOwner->buf1D.cwiseMax(_rMin).cwiseEqual(_rMin).cast<MatReal>().array());
-            }
+//            }
 
             forceOwner->buf1D-=_l0;
 
@@ -176,7 +176,7 @@ public:
             //                }
             //            }
             forceOwner->buf1D*=-k;
-            forceOwner->buf1D=forceOwner->buf1D.cwiseProduct(rMinMaxMask.array());
+//            forceOwner->buf1D=forceOwner->buf1D.cwiseProduct(rMinMaxMask.array());
             forceOwner->buf3D =  forceOwner->attrVec[f.first].block(idx,0,step,COLNUM).eval();
             forceOwner->buf3D= forceOwner->buf3D.colwise()/(forceOwner->buf3D.matrix().rowwise().stableNorm().array());
             FORCE_OWNER->acceleration.block(idx,0,step,COLNUM)+=  forceOwner->buf3D.colwise() * forceOwner->buf1D;
@@ -317,10 +317,59 @@ public:
 };
 
 
+class Wind:public ForceHandler::Force{
+    public :
+    Wind(ForceHandler * f):ForceHandler::Force(f,"Wind"){
+        CPARAM(strength,0,0,100);
+        CPARAM(spread,.1,0,1);
+        CPARAM(speed,1,0,100);
+        index=0;
+    }
+    Array<MatReal,Dynamic,COLNUM> noiseMat;
+
+    void changeNumParticles(int num) override{
+        noiseMat.resize(num, COLNUM);
+        index = 0;
+        for(int i = 0 ; i < FORCE_OWNER->positionInit.rows() ; i++){
+            ofVec3f noise = ofVec3f(ofSignedNoise(spread*FORCE_OWNER->positionInit.row(i)[0]),
+                                    ofSignedNoise(spread*FORCE_OWNER->positionInit.row(i)[1])
+#if COLNUM==3
+                                    ,ofSignedNoise(spread*FORCE_OWNER->positionInit.row(i)[2]));
+#else
+            );
+#endif
+            noiseMat.row(i)[0] = noise.x;
+            noiseMat.row(i)[1] = noise.y;
+#if COLNUM==3
+            noiseMat.row(i)[2] = noise.z;
+#endif
+        }
+
+    }
+
+    void updateForce()override{
+        while((int)index>= FORCE_OWNER->acceleration.rows()){
+            index-=FORCE_OWNER->acceleration.rows();
+        }
+
+        int startIdx = index;
+        int toCopy = FORCE_OWNER->acceleration.rows() - startIdx;
+        FORCE_OWNER->acceleration.block(startIdx,0,toCopy,COLNUM)+= strength*(noiseMat).block(0,0,toCopy,COLNUM);
+        FORCE_OWNER->acceleration.block(0,0,startIdx,COLNUM)+= strength*(noiseMat).block(toCopy,0,startIdx,COLNUM);
+        index+=speed;
+
+
+    }
+    float index;
+    ofParameter<float> strength,spread,speed;
+
+};
+
 void ForceHandler::initForces(){
     new Origin(this);
     new Spring(this);
     new Rotate(this);
+    new Wind(this);
     //    activateForce("rotate");
     new Neighbors(this);
     //    activateForce("neighbors");

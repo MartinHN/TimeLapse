@@ -92,14 +92,14 @@ public:
 #ifdef SPLIT_THREAD
         forceHandler->waitForThread(true);
 #else
-        physics->waitForThread(true);
+        physics->waitForThread(true,1000);
 #endif
     }
     
     };
     
     void startForces(){
-        #ifdef SPLIT_THREAD
+#ifdef SPLIT_THREAD
         forceHandler->startThread();
 #else
         physics->startThread();

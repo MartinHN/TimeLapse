@@ -56,7 +56,7 @@ class ForceHandler : public ofThread {
     public:
 
         Force(ForceHandler * f,string name);
-        ofParameter<bool> active;
+        ofParameter<bool> isActive;
         virtual void activate(){};
         
         virtual void updateForce() = 0;
