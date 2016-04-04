@@ -53,7 +53,8 @@ APPLY_END
 class MultiParticleHandler :public AppViz{
 public:
     MultiParticleHandler(ofApp* a):AppViz(a){
-        params.setName("Particles");
+        params = new ofParameterGroup();
+        params->setName("Particles");
         CPARAM(pointSize,8,0,50);
         CPARAM(lineWidth,8,0,50);
         CPARAM(drawAttr , false,false,true);
@@ -67,7 +68,7 @@ public:
         initGL();
         for(auto &f:particlesList){
             f = new ParticleHandler(this);
-            params.add(f->params);
+            params->add(*f->params);
         }
         start();
         
@@ -86,14 +87,14 @@ public:
     void initGL();
     void renderOnGPU(bool t);
     bool isRenderingOnGPU;
-        ofEasyCam cam;
+    ofEasyCam cam;
     float widthSpace ;
     ofShader shader;
     ofTexture pointTexture;
     ofVec3f screenToWorld(ofVec3f v);
     ofVec3f normalizedToWorld(ofVec3f v);
 
-        void draw() override;
+    void draw() override;
     vector<ParticleHandler*> particlesList;
     
     

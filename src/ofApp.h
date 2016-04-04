@@ -12,7 +12,7 @@
 #include "VizuHandler.h"
 
 
-#include "GloveOSC.h"
+//#include "GloveOSC.h"
 
 class ofApp : public ofBaseApp{
 
@@ -70,7 +70,7 @@ class ofApp : public ofBaseApp{
 
     
     ofxPanel * panel;
-        ofParameterGroup params;
+        ofParameterGroup *  params;
     
 //    GloveOSC  glove;
 

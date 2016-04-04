@@ -3,6 +3,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    params = new ofParameterGroup();
     viz.linkApp(this);
     
     ofBackground(0);
@@ -26,7 +27,7 @@ void ofApp::setup(){
 
 
 
-    params.add(viz.params);
+    params->add(*viz.params);
     
     CPARAM(alphaFade,255,0,255);
 //    CPARAM(mainColor,ofColor(255,255,255,255),ofColor(0),ofColor(255))
@@ -34,8 +35,8 @@ void ofApp::setup(){
     
    
     
-    params.setName("mainParams");
-    panel = new ofxPanel(params);
+    params->setName("mainParams");
+    panel = new ofxPanel(*params);
     
     vizNumber = 0;
     

@@ -17,7 +17,7 @@ class SignalDrawer:public AppViz{
     
 public:
     SignalDrawer(ofApp* a):AppViz(a){
-        params.setName("SignalDrawer");
+        params->setName("SignalDrawer");
         CPARAM(radius,30,1,100);
         CPARAM(onlyHPCP,true,false,true);
         

@@ -19,10 +19,10 @@ class CircleDrawer : public AppViz{
 public:
     CircleDrawer(ofApp* a):AppViz(a){
         rMult.set("mult",1,0,5);
-        params.add(rMult);
+        params->add(rMult);
 
 
-        params.setName("CircleDrawer");
+        params->setName("CircleDrawer");
         CPARAM(X,0.5,0,1);
         CPARAM(Y,0.5,0,5);
         CPARAM(type,0,0,1);

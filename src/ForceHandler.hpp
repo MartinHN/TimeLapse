@@ -24,7 +24,11 @@ class ForceHandler : public ofThread {
     public :
     
     ForceHandler(ParticleHandler * p):owner(p){
-        forcesParams.setName("forces");
+        forcesParams = new ofParameterGroup();
+        forcesParams->setName("forces");
+    }
+    ~ForceHandler(){
+        delete forcesParams;
     }
     
     void threadedFunction() override;
@@ -56,15 +60,16 @@ class ForceHandler : public ofThread {
     public:
 
         Force(ForceHandler * f,string name);
-        ofParameter<bool> isActive;
+        ~Force(){delete params;};
+        ofParameter<bool>  isActive;
         virtual void activate(){};
         
         virtual void updateForce() = 0;
         virtual void changeNumParticles(int num){};
         ForceHandler * forceOwner;
-        ofParameterGroup params;
+        ofParameterGroup *  params;
         
-        void linkParams();
+        virtual void linkParams();
     };
     
     map<string,Force* > availableForces;
@@ -78,7 +83,7 @@ class ForceHandler : public ofThread {
         map<string,ofVec3f> attractors;
     
     
-    ofParameterGroup forcesParams;
+    ofParameterGroup* forcesParams;
     
     
 

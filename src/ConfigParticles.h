@@ -13,7 +13,7 @@
 #define COLNUM 3
 
 
-#define CPARAM(x,v,m,M) x.set(#x,v,m,M);params.add(x);
+#define CPARAM(x,v,m,M) x.set(#x,v,m,M);params->add(x);
 //#define DIFFERENT_SIZES
 //#define FIXEDSIZE 1000//27
 typedef double MatReal;

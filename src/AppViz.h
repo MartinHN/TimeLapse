@@ -12,7 +12,7 @@
 #include "ofMain.h"
 #include "ofxPanel.h"
 
-#define CPARAM(x,v,m,M) x.set(#x,v,m,M);params.add(x);
+#define CPARAM(x,v,m,M) x.set(#x,v,m,M);params->add(x);
 
 
 
@@ -22,7 +22,8 @@ class ofApp;
 class AppViz {
     public :
     AppViz(ofApp * a):app(a){
-        params.setName("viz_default");
+        params = new ofParameterGroup();
+        params->setName("viz_default");
 //        CPARAM(smooth, 0.1,0,.5);
 //        CPARAM(smoothDown,0.1,0,.5);
 //        CPARAM(SubMean,true,false,true);
@@ -33,9 +34,10 @@ class AppViz {
     }
     virtual  ~AppViz(){
         removeListeners();
+        delete params;
     };
     
-    ofParameterGroup params;
+    ofParameterGroup *params;
     void internUpdate(){
         HPCP = getHPCP();
         MFCC = getMFCC();

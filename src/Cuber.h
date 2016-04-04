@@ -13,7 +13,7 @@
 class Cuber:public AppViz{
 public:
     Cuber(ofApp *a):AppViz(a){
-        params.setName("Cuber");
+        params->setName("Cuber");
         
         CPARAM(resolution,ofVec2f(4),ofVec2f(0),ofVec2f(100));
         

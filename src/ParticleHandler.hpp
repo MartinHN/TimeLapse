@@ -28,7 +28,8 @@ class MultiParticleHandler;
 class ParticleHandler{
 public:
     ParticleHandler(MultiParticleHandler * _owner):owner(_owner){
-        params.setName("partGroup");
+        params = new ofParameterGroup();
+        params->setName("partGroup");
         setFPS(30);
         nn = make_shared<MyNN>();
         physics = new PhysicsHandler(this);
@@ -42,8 +43,8 @@ public:
         CPARAM(originType,0,0,10);
         CPARAM(kNN,6,-1,20);
         kNN.addListener(this ,&ParticleHandler::changedLineStyle);
-        params.add(forceHandler->forcesParams);
-        params.add(physics->params);
+        params->add(*forceHandler->forcesParams);
+        params->add(*physics->params);
         originType.addListener(this ,&ParticleHandler::changeOrigin);
 
     };
@@ -55,6 +56,7 @@ public:
 #endif
         delete forceHandler;
         delete physics;
+        delete params;
     }
     
     
@@ -80,7 +82,7 @@ public:
         
     }
     
-    ofParameterGroup params;
+    ofParameterGroup * params;
     ofParameter<int> lineStyle;
     ofParameter<int> originType;
     ofParameter<int > kNN;

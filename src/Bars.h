@@ -16,13 +16,13 @@
 class Bars:public AppViz{
 public:
     Bars(ofApp* a):AppViz(a){
-        params.setName("Bars");
+        params->setName("Bars");
         widthBar.set("widthBar",1,0,4);
-        params.add(widthBar);
+        params->add(widthBar);
 
         
         typeHPCP.set("useHPCP",false,false,true);
-        params.add(typeHPCP);
+        params->add(typeHPCP);
     };
     
     ofParameter<float> widthBar;

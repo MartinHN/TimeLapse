@@ -17,7 +17,7 @@ class Neige : public AppViz{
     
 public:
     Neige(ofApp *a):AppViz(a){
-        params.setName("Neige");
+        params->setName("Neige");
         ofLog() << "create";
         CPARAM(useHPCP,false,false,true);
         CPARAM(threshCreate,0,0,1);

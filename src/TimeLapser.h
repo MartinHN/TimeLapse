@@ -26,7 +26,7 @@ class TimeLapser : public AppViz{
 public:
     
     TimeLapser(ofApp * a):AppViz(a){
-        params.setName("TimeLapser");
+        params->setName("TimeLapser");
         syphon.setup();
         syphon.set("LooperIn","Arena");
         CPARAM(period,50,50,1000);

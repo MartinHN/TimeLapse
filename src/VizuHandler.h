@@ -24,6 +24,7 @@ public:
     VizuHandler():curVizu(nullptr),nextVizu(nullptr),panel(nullptr){
         midiIn.listPorts();
         string portName = "";
+        params = new ofParameterGroup();
         for(auto &a:midiIn.getPortList()){
             if(ofSplitString(a, "nano").size()>1){
                 portName = a;
@@ -53,7 +54,10 @@ public:
         vizNumber.addListener(this,&VizuHandler::vizChanged);
         
     };
-    
+
+    ~VizuHandler(){
+        delete params;
+    }
     
     ofxOscParameterSync  oscParam;
     string mainSavePath;
@@ -107,7 +111,7 @@ public:
                 transitPct = 1;
                 
                 if(curVizu){
-                oscParam.setup(curVizu->params,7555,"localhost",7556);
+                oscParam.setup(*curVizu->params,7555,"localhost",7556);
                 }
                 
             }
@@ -129,8 +133,8 @@ public:
         curNum = num;
         if(nextVizu){
             if(panel!=nullptr)delete panel;
-            string pathSave = mainSavePath+ nextVizu->params.getName()+"_0"+".xml";
-            panel = new ofxPanel(nextVizu->params,pathSave);
+            string pathSave = mainSavePath+ nextVizu->params->getName()+"_0"+".xml";
+            panel = new ofxPanel(*nextVizu->params,pathSave);
            if(!editMode) panel->loadFromFile(pathSave);
             panel->setPosition(250, 10);
         }
@@ -139,9 +143,9 @@ public:
     void setPreset(int p){
         
         if(panel!=nullptr && curVizu!=nullptr){
-            string presetName = mainSavePath+ curVizu->params.getName()+"_"+ofToString(p)+".xml";
+            string presetName = mainSavePath+ curVizu->params->getName()+"_"+ofToString(p)+".xml";
             delete panel;
-            panel = new ofxPanel(curVizu->params,presetName);
+            panel = new ofxPanel(*curVizu->params,presetName);
             panel->setPosition(250, 10);
             if(!editMode)
                 panel->loadFromFile(presetName);
@@ -154,7 +158,7 @@ public:
     
     bool changeNumViz;
     int numViz;
-    ofParameterGroup params;
+    ofParameterGroup * params;
     
    
     

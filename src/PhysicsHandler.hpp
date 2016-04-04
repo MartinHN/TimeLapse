@@ -25,13 +25,17 @@ class PhysicsHandler  : public ofThread{
     public :
     
     PhysicsHandler(ParticleHandler * p):owner(p){
-        params.setName("physics");
+        params = new ofParameterGroup();
+        params->setName("physics");
         
         CPARAM(fr,.9,0,1);
         CPARAM(maxVel,0,0,.1);
         CPARAM(onlyVelocity,false,false,true);
         CPARAM(globalTimeFactor, 1,0.000001,5);
         CPARAM(wrapSpace,false,false,true);
+    }
+    ~PhysicsHandler(){
+        delete params;
     }
     
     void threadedFunction() override;
@@ -43,7 +47,7 @@ class PhysicsHandler  : public ofThread{
     
     ofParameter<float> fr = .9,maxVel = 10,globalTimeFactor;
     ofParameter<bool> onlyVelocity,wrapSpace;
-    ofParameterGroup params;
+    ofParameterGroup * params;
     
     ParticleHandler * owner;
 };

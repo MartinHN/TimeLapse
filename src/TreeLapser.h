@@ -19,7 +19,7 @@ public:
     
     typedef ofVec2f ofVec;
     TreeLapser(ofApp * a):AppViz(a){
-        params.setName("TreeLapser");
+        params->setName("TreeLapser");
         CPARAM(startNew,false,false,true);
         CPARAM(clear,false,false,true);
         CPARAM(speed,1,0,5);

@@ -14,7 +14,7 @@
 #include "CircleDrawer.h"
 #include "Bars.h"
 #include"Neige.h"
-#include "GlovePointer.h"
+//#include "GlovePointer.h"
 #include "MultiParticleHandler.hpp"
 #include "TimeLapser.h"
 #include "TreeLapser.h"

@@ -18,7 +18,7 @@ class GlovePointer : public AppViz,public GloveInteract{
 public:
     GlovePointer(ofApp *a):AppViz(a){
         
-        params.setName("GlovePointer");
+        params->setName("GlovePointer");
         
 //        ofAddListener(ofEvents().mouseDragged,this,&GlovePointer::mouseDragged);
 //        ofAddListener(ofEvents().mousePressed,this , &GlovePointer::mousePressed);

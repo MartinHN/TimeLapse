@@ -59,9 +59,6 @@
 		BCC8D420CBA9217E437D2D76 /* ofxRtMidiIn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F634AA6CA2E3C60F3B87B59A /* ofxRtMidiIn.cpp */; };
 		BDAFF6831BE11EAB00DA7E50 /* VizuHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BDAFF6821BE11EAB00DA7E50 /* VizuHandler.cpp */; };
 		BDAFF6881BE1437F00DA7E50 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDAFF6871BE1437F00DA7E50 /* CoreMIDI.framework */; };
-		BDAFF6971BE240CB00DA7E50 /* GloveInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BDAFF68F1BE240CB00DA7E50 /* GloveInstance.cpp */; };
-		BDAFF6981BE240CB00DA7E50 /* GloveInteract.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BDAFF6911BE240CB00DA7E50 /* GloveInteract.cpp */; };
-		BDAFF69A1BE240CB00DA7E50 /* GloveOSC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BDAFF6951BE240CB00DA7E50 /* GloveOSC.cpp */; };
 		BDD976051BE0EE3900F719F4 /* Syphon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDD976041BE0EE3900F719F4 /* Syphon.framework */; };
 		BDD976061BE0F0FD00F719F4 /* Syphon.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BDD976041BE0EE3900F719F4 /* Syphon.framework */; };
 		BDD976091BE0F16500F719F4 /* AppViz.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BDD976071BE0F16500F719F4 /* AppViz.cpp */; };
@@ -1624,7 +1621,6 @@
 				BDD976091BE0F16500F719F4 /* AppViz.cpp in Sources */,
 				510CAFE035E576A4E1502D52 /* UdpSocket.cpp in Sources */,
 				62545D179C94265CA1389D4A /* OscOutboundPacketStream.cpp in Sources */,
-				BDAFF6981BE240CB00DA7E50 /* GloveInteract.cpp in Sources */,
 				C4782ECC372420ACE0615B74 /* OscPrintReceivedElements.cpp in Sources */,
 				0546D1A38E13BD319CC9755B /* OscReceivedElements.cpp in Sources */,
 				879A251454401BC0B6E4F238 /* OscTypes.cpp in Sources */,
@@ -1640,7 +1636,6 @@
 				1A86B7721CAEBC6F1C572C45 /* ofxBaseMidi.cpp in Sources */,
 				63F9FE1D90234FA6DE6F509E /* ofxMidi.cpp in Sources */,
 				3F7069B61C4D13F900DBC8ED /* README.md in Sources */,
-				BDAFF69A1BE240CB00DA7E50 /* GloveOSC.cpp in Sources */,
 				0BFC9C20FD7E3C8D5873AA97 /* ofxMidiIn.cpp in Sources */,
 				C6FE64F74F1EA1D98C8F9847 /* ofxMidiMessage.cpp in Sources */,
 				83D9F930112E0944444124EE /* ofxMidiOut.cpp in Sources */,
@@ -1651,7 +1646,6 @@
 				11DF9AB1B4EAA63E3B190CA0 /* ofxSyphonServerDirectory.mm in Sources */,
 				BDAFF6831BE11EAB00DA7E50 /* VizuHandler.cpp in Sources */,
 				3F7068131C4D12A100DBC8ED /* ParticleHandler.cpp in Sources */,
-				BDAFF6971BE240CB00DA7E50 /* GloveInstance.cpp in Sources */,
 				C9109422648B170B07A778CF /* SyphonNameboundClient.m in Sources */,
 				04BFA09E012998240B6D10D5 /* ofxTransitions.cpp in Sources */,
 				360D5B74D6C18FC57E0A099D /* ofxTweener.cpp in Sources */,

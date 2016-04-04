@@ -32,7 +32,7 @@ AppViz * VizuHandler::createForNum(int num){
         case 3:
             return new Neige(app);
         case 4:
-            return new GlovePointer(app);
+//            return new GlovePointer(app);
         case 5:
             return new MultiParticleHandler(app);
         case 6:
@@ -103,27 +103,27 @@ int VizuHandler::setLeafChild(ofParameterGroup * pg,int rootIdx,int destIdx,int 
     int count = 0;
     for(int i = 0 ; i < pg->size();i++){
         if(rootIdx + count ==destIdx){
-            ofParameter<int> * pi =  dynamic_cast<ofParameter<int>* > (&curVizu->params.get(count));
+            ofParameter<int> * pi =  dynamic_cast<ofParameter<int>* > (&curVizu->params->get(count));
             if(pi){
                 pi->set(ofMap(value,0,127,pi->getMin(),pi->getMax()));
                 return -1;
             }
-            ofParameter<float> * pf =  dynamic_cast<ofParameter<float>* > (&curVizu->params.get(count));
+            ofParameter<float> * pf =  dynamic_cast<ofParameter<float>* > (&curVizu->params->get(count));
             if(pf){
                 pf->set(ofMap(value,0,127,pf->getMin(),pf->getMax()));
                 return -1;
             }
-            ofParameter<bool> * pb =  dynamic_cast<ofParameter<bool>* > (&curVizu->params.get(count));
+            ofParameter<bool> * pb =  dynamic_cast<ofParameter<bool>* > (&curVizu->params->get(count));
             if(pb){
                 pb->set(value>64);
                 return -1;
             }
-            ofParameter<ofVec2f> * pv =  dynamic_cast<ofParameter<ofVec2f>* > (&curVizu->params.get(count));
+            ofParameter<ofVec2f> * pv =  dynamic_cast<ofParameter<ofVec2f>* > (&curVizu->params->get(count));
             if(pv){
                 *pv = ofVec2f(ofMap(value,0,127,pv->getMin().x,pv->getMax().x),pv->get().y);
                 return -1;
             }
-            ofParameter<ofVec3f> * pv3 =  dynamic_cast<ofParameter<ofVec3f>* > (&curVizu->params.get(count));
+            ofParameter<ofVec3f> * pv3 =  dynamic_cast<ofParameter<ofVec3f>* > (&curVizu->params->get(count));
             if(pv3){
                 *pv3 = ofVec3f(ofMap(value,0,127,pv3->getMin().x,pv3->getMax().x),pv3->get().y,pv3->get().z);
                 return -1;
@@ -131,7 +131,7 @@ int VizuHandler::setLeafChild(ofParameterGroup * pg,int rootIdx,int destIdx,int 
         }
         
         if(destIdx==rootIdx + count +1 ){
-            ofParameter<ofVec2f> * pv =  dynamic_cast<ofParameter<ofVec2f>* > (&curVizu->params.get(count));
+            ofParameter<ofVec2f> * pv =  dynamic_cast<ofParameter<ofVec2f>* > (&curVizu->params->get(count));
             if(pv){
                 *pv = ofVec2f(pv->get().x,ofMap(value,0,127,pv->getMin().y,pv->getMax().y));
                 return -1;
@@ -141,20 +141,20 @@ int VizuHandler::setLeafChild(ofParameterGroup * pg,int rootIdx,int destIdx,int 
         
         
         
-        if(dynamic_cast<ofParameter<int>* > (&curVizu->params.get(i)) ||
-           dynamic_cast<ofParameter<float>* > (&curVizu->params.get(i)) ||
-           dynamic_cast<ofParameter<bool>* > (&curVizu->params.get(i)) ){
+        if(dynamic_cast<ofParameter<int>* > (&curVizu->params->get(i)) ||
+           dynamic_cast<ofParameter<float>* > (&curVizu->params->get(i)) ||
+           dynamic_cast<ofParameter<bool>* > (&curVizu->params->get(i)) ){
             count++;
             
         }
-        else if(dynamic_cast<ofParameter<ofVec2f>* > (&curVizu->params.get(i))){
+        else if(dynamic_cast<ofParameter<ofVec2f>* > (&curVizu->params->get(i))){
             count+=2;
         }
-        else if(dynamic_cast<ofParameter<ofVec3f>* > (&curVizu->params.get(i))){
+        else if(dynamic_cast<ofParameter<ofVec3f>* > (&curVizu->params->get(i))){
             count+=3;
         }
-        else if(dynamic_cast<ofParameterGroup* > (&curVizu->params.get(i))){
-            int res =setLeafChild(dynamic_cast<ofParameterGroup* > (&curVizu->params.get(i)),count,destIdx,value);
+        else if(dynamic_cast<ofParameterGroup* > (&curVizu->params->get(i))){
+            int res =setLeafChild(dynamic_cast<ofParameterGroup* > (&curVizu->params->get(i)),count,destIdx,value);
             if(res == -1 ){
                 return -1;
             }

@@ -62,11 +62,15 @@ void ForceHandler::doJob(){
 }
 
 ForceHandler::Force::Force(ForceHandler * f,string name):forceOwner(f){
+
     isActive = false;
     forceOwner->availableForces[name] = this;
-    params.setName(name);
-    CPARAM(isActive,true,false,true);
-    forceOwner->forcesParams.add(params);
+    params = new ofParameterGroup();
+    params->setName(name);
+    isActive.set("isActive",true,false,true);
+
+    //    CPARAM(*isActive,true,false,true);
+    forceOwner->forcesParams->add(*params);
 
 }
 void ForceHandler::Force::linkParams(){
@@ -110,9 +114,11 @@ class Origin : public ForceHandler::Force{
 public:
     Origin(ForceHandler * f):Force(f,"origin"){
 
+
+    }
+    void linkParams()override{
         CPARAM(k,0.1,0,0.5);
     }
-
     //    MyMatrixType origins;
 
     ofParameter<float> k=0.1;
@@ -130,6 +136,9 @@ public:
 class Spring:public ForceHandler::Force{
 public:
     Spring(ForceHandler * f):ForceHandler::Force(f,"spring"){
+
+    }
+    void linkParams ()override{
         CPARAM(k,.1,0,10);
         CPARAM(l0,.1,0,1);
         CPARAM(rMin,0,0,1);
@@ -151,19 +160,20 @@ public:
         double _rMin = rMin * FORCE_OWNER->getWidthSpace();
         int idx = 0;
 
-        int step = FORCE_OWNER->numParticles /(perAttr.get()? MAX(forceOwner->attractors.size()+1,1):1);
+        int step = FORCE_OWNER->numParticles /(perAttr.get()? MAX(forceOwner->attractors.size(),1)+1:1);
         if(numPerAttr>0){
             step = numPerAttr;
         }
         rMinMaxMask.resize(step,1);
         forceOwner->buf1D.resize(step, 1);
         forceOwner->buf3D.resize(step,3);
+
         for(auto & f:forceOwner->attractors){
             forceOwner->buf1D  =   forceOwner->attrNorm[f.first].block(idx,0,step,1).col(0);
-//            if(_rMax>0 && _rMax>_rMin){
-//                rMinMaxMask=forceOwner->buf1D.cwiseMin(_rMax).cwiseEqual(_rMax).cast<MatReal>();
-                //                rMinMaxMask = rMinMaxMask.array().cwiseProduct(forceOwner->buf1D.cwiseMax(_rMin).cwiseEqual(_rMin).cast<MatReal>().array());
-//            }
+            //            if(_rMax>0 && _rMax>_rMin){
+            //                rMinMaxMask=forceOwner->buf1D.cwiseMin(_rMax).cwiseEqual(_rMax).cast<MatReal>();
+            //                rMinMaxMask = rMinMaxMask.array().cwiseProduct(forceOwner->buf1D.cwiseMax(_rMin).cwiseEqual(_rMin).cast<MatReal>().array());
+            //            }
 
             forceOwner->buf1D-=_l0;
 
@@ -176,12 +186,13 @@ public:
             //                }
             //            }
             forceOwner->buf1D*=-k;
-//            forceOwner->buf1D=forceOwner->buf1D.cwiseProduct(rMinMaxMask.array());
+            //            forceOwner->buf1D=forceOwner->buf1D.cwiseProduct(rMinMaxMask.array());
             forceOwner->buf3D =  forceOwner->attrVec[f.first].block(idx,0,step,COLNUM).eval();
             forceOwner->buf3D= forceOwner->buf3D.colwise()/(forceOwner->buf3D.matrix().rowwise().stableNorm().array());
             FORCE_OWNER->acceleration.block(idx,0,step,COLNUM)+=  forceOwner->buf3D.colwise() * forceOwner->buf1D;
-
-            idx+=step;
+            if(numPerAttr>0 || perAttr.get()){
+                idx+=step;
+            }
 
 
         }
@@ -190,18 +201,23 @@ public:
 class Rotate:public ForceHandler::Force{
 public:
     Rotate(ForceHandler * f):ForceHandler::Force(f,"rotate"){
-        CPARAM(k,0,0,10);
+        tmp = nullptr;
+    }
+    void linkParams()override{
+        CPARAM(kk,0.0,0.0,10.0);
     }
 
-
-    ofParameter<double> k = .001;
-    MyMatrixType  tmp ;
+    ofParameter<double> kk = .001;
+    MyMatrixType *   tmp ;
 
     void changeNumParticles(int num) override{
+        if(tmp==nullptr)tmp = new MyMatrixType();
 #ifndef FIXEDSIZE
-        tmp.resize(num,MyMatrixType::ColsAtCompileTime);
+        tmp->resize(num,MyMatrixType::ColsAtCompileTime);
 #endif
     }
+
+
 
     void updateForce()override{
         for(auto & f:forceOwner->attractors){
@@ -222,7 +238,7 @@ public:
                 dp.set(d[1],d[0],-d[0]*d[1]);
                 dp.normalize();
                 d.cross(dp);
-                d*=k;
+                d*=kk;
                 //            d.normalize();
                 data[idx]+= d[0];
                 data[idx+1] += d[1];
@@ -240,13 +256,17 @@ public:
 class Neighbors:public ForceHandler::Force{
 public:
     Neighbors(ForceHandler * f):ForceHandler::Force(f,"neighbors"){
+
+        //                initDist.addListener(this , & Neighbors::initDistances);
+    }
+
+    void linkParams() override{
         CPARAM(k,0.0002,0,0.3);
         CPARAM(distMax,0,0,0.2);
         CPARAM(ripMax,0,0,0.2);
         CPARAM(l0,1,0,5);
         CPARAM(propa,0,0,1);
         CPARAM(initDist,false,true,false);
-        //                initDist.addListener(this , & Neighbors::initDistances);
     }
     ofParameter<float> k,distMax,ripMax,l0 ,propa;
 
@@ -320,10 +340,14 @@ public:
 class Wind:public ForceHandler::Force{
     public :
     Wind(ForceHandler * f):ForceHandler::Force(f,"Wind"){
+
+        index=0;
+    }
+
+    void linkParams()override{
         CPARAM(strength,0,0,100);
         CPARAM(spread,.1,0,1);
         CPARAM(speed,1,0,100);
-        index=0;
     }
     Array<MatReal,Dynamic,COLNUM> noiseMat;
 
@@ -367,14 +391,19 @@ class Wind:public ForceHandler::Force{
 
 void ForceHandler::initForces(){
     new Origin(this);
-    new Spring(this);
+
     new Rotate(this);
+    new Spring(this);
     new Wind(this);
     //    activateForce("rotate");
     new Neighbors(this);
     //    activateForce("neighbors");
     
-    
+    for(auto & t:availableForces){
+        t.second->params->add(t.second->isActive);
+        t.second->linkParams();
+        
+    }
     
     changeNumParticles(owner->numParticles);
 }
