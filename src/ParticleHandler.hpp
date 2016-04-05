@@ -73,13 +73,15 @@ public:
     }
     void changedLineStyle(int & s){
         //avoid doublons from mouse release, not so pretty..
-        
+        stopForces();
         if(kNN==lastkNN)
             return;
         initIndexes();
         forceHandler->changeNumParticles(numParticles);
         lastkNN = kNN;
-        
+
+        startForces();
+
     }
     
     ofParameterGroup * params;
@@ -94,7 +96,7 @@ public:
 #ifdef SPLIT_THREAD
         forceHandler->waitForThread(true);
 #else
-        physics->waitForThread(true,1000);
+        physics->waitForThread(true,10000);
 #endif
     }
     
@@ -136,9 +138,7 @@ public:
     vector<unsigned int> lineIdx;
     vector<float> lineDists;
     void setNumParticles(int num);
-    void setFPS(int fps){
-        deltaT = 1000.0/fps;
-    }
+    void setFPS(int fps){deltaT = 1000.0/fps;}
     void loadModel(ofFile f);
     void update();
     void draw();
