@@ -51,7 +51,7 @@ void ForceHandler::doJob(){
     if(owner->numParticles>0){
         for(auto k :availableForces){
             if(k.second->isActive){
-                //            ofScopedLock lk(mutex);
+                ofScopedLock lk(mutex);
                 k.second->updateForce();
             }
 
@@ -274,8 +274,10 @@ public:
     vector<unsigned int> myLineIdx;
     Array<MatReal,Dynamic,COLNUM> lastDists;
     ofParameter<bool> initDist;
-    void changeNumParticles(int num) override{
 
+    ofMutex mumu;
+    void changeNumParticles(int num) override{
+        ofScopedLock lk(mumu);
         myLineIdx = FORCE_OWNER->lineIdx;
         initDist = true;
 
@@ -283,6 +285,8 @@ public:
 
 
     void initDistances(){
+
+        ofScopedLock lk(mumu);
         lastDists.resize(myLineIdx.size()/2, COLNUM);
 
         MatReal tmpNorm;
@@ -306,7 +310,8 @@ public:
 
         double _ripMax = ripMax*FORCE_OWNER->getWidthSpace();
 
-
+        ofScopedLock lk(mumu);
+//        if(lastDists.rows()<1 ||  myLineIdx.size()<2)return;
         for(int i = 0 ; i <myLineIdx.size()-1  ; i+=2){
             Array<MatReal,COLNUM,1> dist = FORCE_OWNER->position.row(myLineIdx[i]) -FORCE_OWNER->position.row(myLineIdx[i+1]);
             MatReal norm = dist.matrix().norm();
@@ -345,7 +350,7 @@ class Wind:public ForceHandler::Force{
     }
 
     void linkParams()override{
-        CPARAM(strength,0,0,1);
+        CPARAM(strength,0,0,10);
         CPARAM(spread,.1,0,1);
         CPARAM(speed,1,0,100);
     }

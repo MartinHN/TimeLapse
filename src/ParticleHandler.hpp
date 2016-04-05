@@ -50,7 +50,7 @@ public:
     };
     
     ~ParticleHandler(){
-        physics->waitForThread(true);
+        physics->waitForThread(true,1000000);
 #ifdef SPLIT_THREAD
         forceHandler->waitForThread(true);
 #endif
@@ -96,7 +96,7 @@ public:
 #ifdef SPLIT_THREAD
         forceHandler->waitForThread(true);
 #else
-        physics->waitForThread(true,10000);
+        physics->waitForThread(true,1000000);
 #endif
     }
     
