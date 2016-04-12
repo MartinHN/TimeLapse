@@ -54,8 +54,8 @@ void PhysicsHandler::doJob(){
 #ifdef SPLIT_THREAD
             ofScopedLock(owner->mutex);
 #endif
-      
-            owner->velocity+=owner->acceleration * dT;
+            if(consistency>0){ owner->velocity=consistency*owner->velocity + (1.0-consistency)*(owner->velocity+owner->acceleration * dT);}
+            else{owner->velocity+=owner->acceleration * dT;}
         }
         if(fr!=1)
             owner->velocity*=pow((double)fr,dT);
@@ -68,6 +68,8 @@ void PhysicsHandler::doJob(){
             //        ofLog() << tmpVel;
             //            owner->velocity= tmpVel;
         }
+
+
         owner->position+=owner->velocity *   dT;
         
         if(wrapSpace){

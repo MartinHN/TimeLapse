@@ -48,7 +48,7 @@ void ForceHandler::doJob(){
     owner->acceleration.setZero();
 
     preComputeDists();
-    if(owner->numParticles>0){
+    if(owner->position.rows()>0){
         for(auto k :availableForces){
             if(k.second->isActive){
                 ofScopedLock lk(mutex);
@@ -149,7 +149,7 @@ public:
         CPARAM(power,1,-3,3);
     }
     //    Matrix<MatReal,1,3> pos;
-    ofParameter<double> k,l0,rMax,rMin;
+    ofParameter<float> k,l0,rMax,rMin;
     ofParameter<int> numPerAttr;
     ofParameter<MatReal>power;
     ofParameter<bool> perAttr;
@@ -207,7 +207,7 @@ public:
         CPARAM(kk,0.0,0.0,10.0);
     }
 
-    ofParameter<double> kk = .001;
+    ofParameter<float> kk = .001;
     MyMatrixType *   tmp ;
 
     void changeNumParticles(int num) override{
@@ -290,7 +290,7 @@ public:
         lastDists.resize(myLineIdx.size()/2, COLNUM);
 
         MatReal tmpNorm;
-        for(int i = 0 ; i <myLineIdx.size()-1  ; i+=2){
+        for(int i = 0 ; i <MIN(myLineIdx.size()-1,2*lastDists.rows())  ; i+=2){
             lastDists.row(i/2)  = (FORCE_OWNER->positionInit.row(myLineIdx[i]) -FORCE_OWNER->positionInit.row(myLineIdx[i+1]));
             //            tmpNorm = lastDists.row(i/2).matrix().norm();
             //            if(tmpNorm == 0)
@@ -301,6 +301,8 @@ public:
 
         }
         initDist = false;
+        ofSleepMillis(1000);
+
     }
     void updateForce()override{
 
@@ -311,8 +313,8 @@ public:
         double _ripMax = ripMax*FORCE_OWNER->getWidthSpace();
 
         ofScopedLock lk(mumu);
-//        if(lastDists.rows()<1 ||  myLineIdx.size()<2)return;
-        for(int i = 0 ; i <myLineIdx.size()-1  ; i+=2){
+        //        if(lastDists.rows()<1 ||  myLineIdx.size()<2)return;
+        for(int i = 0 ; i <std::min((int)myLineIdx.size()-1,(int)lastDists.rows()*2)  ; i+=2){
             Array<MatReal,COLNUM,1> dist = FORCE_OWNER->position.row(myLineIdx[i]) -FORCE_OWNER->position.row(myLineIdx[i+1]);
             MatReal norm = dist.matrix().norm();
             if(norm>0 && (_ripMax==0 ||norm<_ripMax)){
@@ -342,9 +344,9 @@ public:
 };
 
 
-class Wind:public ForceHandler::Force{
+class Noise:public ForceHandler::Force{
     public :
-    Wind(ForceHandler * f):ForceHandler::Force(f,"Wind"){
+    Noise(ForceHandler * f):ForceHandler::Force(f,"Noise"){
 
         index=0;
     }
@@ -353,17 +355,21 @@ class Wind:public ForceHandler::Force{
         CPARAM(strength,0,0,10);
         CPARAM(spread,.1,0,1);
         CPARAM(speed,1,0,100);
+        lastSpread= spread;
     }
     Array<MatReal,Dynamic,COLNUM> noiseMat;
-
+    float lastSpread;
     void changeNumParticles(int num) override{
-        noiseMat.resize(num, COLNUM);
+        initNoiseMat();
+    }
+    void initNoiseMat(){
+        noiseMat.resize(FORCE_OWNER->positionInit.rows(), COLNUM);
         index = 0;
         for(int i = 0 ; i < FORCE_OWNER->positionInit.rows() ; i++){
-            ofVec3f noise = ofVec3f(ofSignedNoise(spread*FORCE_OWNER->positionInit.row(i)[0]),
-                                    ofSignedNoise(spread*FORCE_OWNER->positionInit.row(i)[1])
+            ofVec3f noise = ofVec3f(ofSignedNoise((spread/FORCE_OWNER->getWidthSpace())*FORCE_OWNER->positionInit.row(i)[0]),
+                                    ofSignedNoise((spread/FORCE_OWNER->getWidthSpace())*FORCE_OWNER->positionInit.row(i)[1])
 #if COLNUM==3
-                                    ,ofSignedNoise(spread*FORCE_OWNER->positionInit.row(i)[2]));
+                                    ,ofSignedNoise((spread/FORCE_OWNER->getWidthSpace())*FORCE_OWNER->positionInit.row(i)[2]));
 #else
             );
 #endif
@@ -376,7 +382,12 @@ class Wind:public ForceHandler::Force{
 
     }
 
+
     void updateForce()override{
+        if(lastSpread!=spread){
+            initNoiseMat();
+            lastSpread= spread;
+        }
         while((int)index>= FORCE_OWNER->acceleration.rows()){
             index-=FORCE_OWNER->acceleration.rows();
         }
@@ -394,14 +405,129 @@ class Wind:public ForceHandler::Force{
 
 };
 
+
+
+
+class Tornado: public ForceHandler::Force{
+public:
+    Tornado(ForceHandler * f):ForceHandler::Force(f,"Tornado"){
+
+    }
+    ofParameter<ofVec2f> center;
+    ofParameter<float> radius,noise,attract,speed,noiseSpread;
+
+    void linkParams()override{
+        CPARAM(center,ofVec2f(0),ofVec2f(-1),ofVec2f(1));
+        CPARAM(radius,0.25,0,0.5);
+        CPARAM(attract,0.,0.,1.);
+        CPARAM(speed,0.,0.,1.);
+        CPARAM(noise,0,0,10);
+        CPARAM(noiseSpread,0,0,10);
+    }
+    void changeNumParticles(int num) override{
+
+
+    }
+
+    void updateForce()override{
+
+        //        forceOwner->buf3D.resize(FORCE_OWNER->position.rows(), COLNUM);
+        for(int i = 0 ; i < FORCE_OWNER->position.rows() ; i++){
+            ofVec2f attractDir (FORCE_OWNER->position.row(i)[0] - center->x*FORCE_OWNER->getWidthSpace(),
+                                FORCE_OWNER->position.row(i)[1] - center->y*FORCE_OWNER->getWidthSpace());
+
+
+            ofVec2f tangent(attractDir.y,-attractDir.x);
+            float norm = attractDir.length()-radius*FORCE_OWNER->getWidthSpace();
+            if(noise>0){norm*=noise*ofNoise( FORCE_OWNER->position.row(i)[2]/(noiseSpread*FORCE_OWNER->getWidthSpace()));}
+            attractDir= attractDir.getNormalized()*norm;
+
+            ofVec3f force = -attractDir*attract + tangent.getNormalized()*speed;
+
+            FORCE_OWNER->acceleration.row(i)[0] += force.x;
+            FORCE_OWNER->acceleration.row(i)[1] += force.y;
+
+        }
+
+    }
+
+};
+
+class Flock:public ForceHandler::Force{
+public:
+    Flock(ForceHandler* f):ForceHandler::Force(f,"Flock"){
+        nn = make_shared<MyNN>();
+
+        CPARAM(minDist,.01,0,.3);
+        CPARAM(attrRepulse,0.5,0,1);
+        CPARAM(k,.01,0,.3);
+        CPARAM(resolution,10,1,1000);
+        CPARAM(maxPointsPerFlock,10,2,50);
+    }
+
+    ofParameter<int> resolution,maxPointsPerFlock;
+    ofParameter<float>minDist,k,attrRepulse;
+    typedef Eigen::Array<double, 3, 1, 0, 3, 1>  pointType;
+    vector<int> classes;
+    float _minDist;
+    int startIdx = 0;
+    void updateForce()override{
+        buildNN();
+        _minDist =minDist*FORCE_OWNER->getWidthSpace();
+        startIdx++;
+        startIdx%=FORCE_OWNER->position.rows();
+        for(int ii = 0 ; ii  < FORCE_OWNER->position.rows() ; ii+=resolution){
+            int i = (ii+startIdx)% FORCE_OWNER->position.rows();
+            Eigen::Array<float, 3, 1, 0, 3, 1> point = FORCE_OWNER->position.row(i).cast<float>();
+            vector<size_t> indices;
+            vector<float> dists;
+
+            nn->findNClosestPoints(point, maxPointsPerFlock, indices, dists);
+
+            for(int j = indices.size() -1 ; j>=0 ;--j){
+                int di = indices[j];
+                float dlen = sqrt(dists[j]);
+                if(dlen<_minDist){
+                    if(dlen>0.00001){
+                        float norm = (dlen- attrRepulse*_minDist)*k;
+                        pointType d (FORCE_OWNER->position.row(di) - FORCE_OWNER->position.row(i));
+                        d/=dlen;
+                        FORCE_OWNER->acceleration.row(di)-= norm*d;
+                        FORCE_OWNER->acceleration.row(i)+= norm*d;
+                    }
+//                }
+            }
+            }
+
+        }
+
+    }
+    void changeNumParticles(int num) override{
+        classes.resize(num);
+    }
+
+    void buildNN(){
+        nn->buildIndex(FORCE_OWNER->position);
+
+    }
+    typedef itg::NearestNeighbour<Array<float,COLNUM,1> >  MyNN;
+    shared_ptr<MyNN>  nn;
+
+};
+
+
+
 void ForceHandler::initForces(){
     new Origin(this);
 
     new Rotate(this);
     new Spring(this);
-    new Wind(this);
+    new Tornado(this);
+    new Noise(this);
     //    activateForce("rotate");
     new Neighbors(this);
+    new Flock(this);
+    
     //    activateForce("neighbors");
     
     for(auto & t:availableForces){

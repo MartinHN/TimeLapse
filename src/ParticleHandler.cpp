@@ -193,14 +193,14 @@ void ParticleHandler::initIndexes(){
 #endif
             for(int j = 0 ; j < kNN ; j++){
                 bool found = false;
-                for(int l = 0 ; l < foundIdx ; l++){
-                    if((lineIdx[l*2] == foundNN[j] &&
-                        lineIdx[(l)*2+1] == i )
-                       ){
-                        found = true;
-                        break;
-                    }
-                }
+//                for(int l = 0 ; l < foundIdx ; l++){
+//                    if((lineIdx[l*2] == foundNN[j] &&
+//                        lineIdx[(l)*2+1] == i )
+//                       ){
+//                        found = true;
+//                        break;
+//                    }
+//                }
                 if(!found && foundNNDist[j]>0){
                     lineIdx[foundIdx*2] = i;
                     lineIdx[foundIdx*2+1] =foundNN[j] ;

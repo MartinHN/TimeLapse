@@ -30,6 +30,7 @@ class PhysicsHandler  : public ofThread{
         
         CPARAM(fr,.9,0,1);
         CPARAM(maxVel,0,0,.1);
+        CPARAM(consistency,0,0,1);
         CPARAM(onlyVelocity,false,false,true);
         CPARAM(globalTimeFactor, 1,0.000001,5);
         CPARAM(wrapSpace,false,false,true);
@@ -45,8 +46,9 @@ class PhysicsHandler  : public ofThread{
     double actualDelay;
     
     
-    ofParameter<float> fr = .9,maxVel = 10,globalTimeFactor;
+    ofParameter<float> fr = .9,maxVel = 10,globalTimeFactor,consistency;
     ofParameter<bool> onlyVelocity,wrapSpace;
+
     ofParameterGroup * params;
     
     ParticleHandler * owner;
